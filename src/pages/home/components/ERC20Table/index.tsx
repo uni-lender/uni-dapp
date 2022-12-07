@@ -9,14 +9,14 @@ import Paper from '@mui/material/Paper';
 import { Button, Typography } from '@mui/material';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    [`&.${tableCellClasses.head}`]: {
-      backgroundColor: 'transparent',
-      color: theme.palette.grey[700],
-    },
-    [`&.${tableCellClasses.body}`]: {
-      fontSize: 14,
-      backgroundColor: 'white',
-    },
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: 'transparent',
+    color: theme.palette.grey[700],
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+    backgroundColor: 'white',
+  },
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -29,24 +29,24 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function createData(
+const createData = (
   name: string,
   balance: number,
   supplyAPY: number,
   borrowAPY: number,
-  Liquidity: number,
-) {
+  Liquidity: number
+) => {
   return { name, balance, supplyAPY, borrowAPY, Liquidity };
-}
+};
 
-const rows = [
-  createData('ETH', 159, 6.0, 24, 4.0),
-];
+const rows = [createData('ETH', 159, 6.0, 24, 4.0)];
 
-export default function ERC20Table() {
+const ERC20Table = () => {
   return (
     <TableContainer component={Paper}>
-      <Typography variant='h6' component="div" sx={{m: 3}}>ERC20 Tokens</Typography>
+      <Typography variant="h6" component="div" sx={{ m: 3 }}>
+        ERC20 Tokens
+      </Typography>
       <Table sx={{ width: '96%', m: 3 }} aria-label="customized table">
         <TableHead>
           <TableRow>
@@ -68,11 +68,14 @@ export default function ERC20Table() {
               <StyledTableCell align="right">{row.supplyAPY}</StyledTableCell>
               <StyledTableCell align="right">{row.borrowAPY}</StyledTableCell>
               <StyledTableCell align="right">{row.Liquidity}</StyledTableCell>
-              <StyledTableCell align="right"><Button variant="outlined">Borrow</Button></StyledTableCell>
+              <StyledTableCell align="right">
+                <Button variant="outlined">Borrow</Button>
+              </StyledTableCell>
             </StyledTableRow>
           ))}
         </TableBody>
       </Table>
     </TableContainer>
   );
-}
+};
+export default ERC20Table;

@@ -1,4 +1,4 @@
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyle = createGlobalStyle`
 body {
@@ -13,4 +13,4 @@ body {
         flex: 1;
         padding: 40px;
     }
-}`
+}`;

@@ -1,0 +1,102 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "jest": true
+  },
+  "extends": ["react-app", "react-app/jest", "prettier"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "ignorePatterns": ["src/components/Icon/source"],
+  "plugins": [
+    "@typescript-eslint",
+    "react",
+    "react-hooks",
+    "import",
+    "prefer-arrow",
+    "prettier"
+  ],
+  "rules": {
+    "no-console": "off",
+    //"eslint linebreak-style": [0, "error", "windows"],
+    "prettier/prettier": ["error", { "endOfLine": "auto" }],
+    "import/order": ["error", { "newlines-between": "always" }],
+    "react/jsx-filename-extension": [
+      2,
+      { "extensions": [".js", ".jsx", ".tsx", ".ts"] }
+    ],
+    "prefer-arrow/prefer-arrow-functions": [
+      "error",
+      {
+        "disallowPrototype": true,
+        "singleReturnOnly": false,
+        "classPropertiesAllowed": false
+      }
+    ],
+    "import/no-unresolved": [
+      "error",
+      {
+        "ignore": ["^@/"],
+        "caseSensitive": false,
+        "commonjs": true
+      }
+    ],
+    "import/extensions": [
+      "error",
+      "never",
+      {
+        "ignorePackages": true,
+        "pattern": {
+          "svg": "always",
+          "png": "always"
+        }
+      }
+    ],
+    "multiline-ternary": "off",
+    "react/jsx-props-no-spreading": "off",
+    "react/no-array-index-key": "off",
+    "react/prop-types": "off",
+    "import/prefer-default-export": "off",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "error",
+    "no-param-reassign": "off",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      { "vars": "all", "argsIgnorePattern": "^_" }
+    ],
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": "error",
+    "jsx-a11y/label-has-associated-control": ["error", {}],
+    "react/no-unescaped-entities": "off",
+    "react/require-default-props": "off",
+    "react/jsx-uses-react": "off",
+    "react/react-in-jsx-scope": "off",
+    "react/function-component-definition": [
+      2,
+      {
+        "namedComponents": "arrow-function",
+        "unnamedComponents": "arrow-function"
+      }
+    ],
+    // https://github.com/yannickcr/eslint-plugin-react/issues/2584
+    "react/jsx-no-useless-fragment": [2, { "allowExpressions": true }],
+    "import/no-extraneous-dependencies": "off",
+    "react/no-unstable-nested-components": 1,
+    "max-lines-per-function": ["error", { "max": 520 }]
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "paths": ["src"],
+        "extensions": [".js", ".jsx", ".ts", ".tsx", ".d.ts"]
+      }
+    }
+  }
+}
