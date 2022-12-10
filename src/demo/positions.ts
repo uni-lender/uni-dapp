@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 
-import { Erc20__factory, Univ3__factory } from '../contracts';
-import { UNIV3_ADDRESS } from '../static/constants/contract';
+import { UNIV3_ADDRESS } from '@/static/constants/contract';
+import { Erc20__factory, Univ3__factory } from '@/contracts';
 
 console.log('hello univ3');
 

@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import styled from 'styled-components';
 
-import { Home } from './pages/home';
-import { GlobalStyle } from './static/css/globalStyles';
+import { Home } from '@/pages/home';
+import { GlobalStyle } from '@/static/css/globalStyles';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
