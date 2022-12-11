@@ -13,4 +13,8 @@ body {
         flex: 1;
         padding: 40px;
     }
+}
+:root {
+    --bg: #191b1f;
+    --primary-color: #ff007a;
 }`;

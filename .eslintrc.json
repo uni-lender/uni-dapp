@@ -54,7 +54,8 @@
         "ignorePackages": true,
         "pattern": {
           "svg": "always",
-          "png": "always"
+          "png": "always",
+          "json": "always"
         }
       }
     ],

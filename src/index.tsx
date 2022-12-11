@@ -1,23 +1,25 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import styled from 'styled-components';
+import { Web3ReactProvider } from '@web3-react/core';
 
+import { getLibrary, Web3ContextProvider } from './contexts/web3Context';
+
+import { Header } from '@/components/header';
 import { Home } from '@/pages/home';
 import { GlobalStyle } from '@/static/css/globalStyles';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
-const Header = styled.header`
-  padding: 40px;
-  background: #1976d2;
-  color: #fff;
-  font-weight: bold;
-`;
+
 root.render(
   <React.StrictMode>
-    <GlobalStyle />
-    <Header>header connect wallet</Header>
-    <Home />
+    <Web3ReactProvider getLibrary={getLibrary}>
+      <Web3ContextProvider>
+        <GlobalStyle />
+        <Header />
+        <Home />
+      </Web3ContextProvider>
+    </Web3ReactProvider>
   </React.StrictMode>
 );
