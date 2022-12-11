@@ -1,36 +1,31 @@
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Button, Typography } from '@mui/material';
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: 'transparent',
-    color: theme.palette.grey[700],
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
-    backgroundColor: 'white',
-  },
-}));
+import { TokenIcon, TokenName } from '@/components/tokenIcon';
 
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  '&:nth-of-type(odd)': {
-    backgroundColor: theme.palette.action.hover,
-  },
-  // hide last border
+const IconWrap = styled(TableCell)`
+  display: flex;
+  align-items: center;
+  img {
+    margin-right: 10px;
+  }
+`;
+
+const StyledTableRow = styled(TableRow)(() => ({
   '&:last-child td, &:last-child th': {
     border: 0,
   },
 }));
 
 const createData = (
-  name: string,
+  name: TokenName,
   balance: number,
   supplyAPY: number,
   borrowAPY: number,
@@ -39,7 +34,7 @@ const createData = (
   return { name, balance, supplyAPY, borrowAPY, Liquidity };
 };
 
-const rows = [createData('ETH', 159, 6.0, 24, 4.0)];
+const rows = [createData('WETH', 159, 6.0, 24, 4.0)];
 
 const ERC20Table = () => {
   return (
@@ -50,27 +45,30 @@ const ERC20Table = () => {
       <Table sx={{ width: '96%', m: 3 }} aria-label="customized table">
         <TableHead>
           <TableRow>
-            <StyledTableCell>Assets</StyledTableCell>
-            <StyledTableCell align="right">TVL</StyledTableCell>
-            <StyledTableCell align="right">Supply APY</StyledTableCell>
-            <StyledTableCell align="right">Borrow APY</StyledTableCell>
-            <StyledTableCell align="right">Liquidity</StyledTableCell>
-            <StyledTableCell align="right"></StyledTableCell>
+            <TableCell>Assets</TableCell>
+            <TableCell align="right">TVL</TableCell>
+            <TableCell align="right">Supply APY</TableCell>
+            <TableCell align="right">Borrow APY</TableCell>
+            <TableCell align="right">Liquidity</TableCell>
+            <TableCell align="right"></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {rows.map((row) => (
             <StyledTableRow key={row.name}>
-              <StyledTableCell component="th" scope="row">
+              <IconWrap component="th" scope="row">
+                <TokenIcon name={row.name} />
                 {row.name}
-              </StyledTableCell>
-              <StyledTableCell align="right">{row.balance}</StyledTableCell>
-              <StyledTableCell align="right">{row.supplyAPY}</StyledTableCell>
-              <StyledTableCell align="right">{row.borrowAPY}</StyledTableCell>
-              <StyledTableCell align="right">{row.Liquidity}</StyledTableCell>
-              <StyledTableCell align="right">
-                <Button variant="outlined">Borrow</Button>
-              </StyledTableCell>
+              </IconWrap>
+              <TableCell align="right">{row.balance}</TableCell>
+              <TableCell align="right">{row.supplyAPY}</TableCell>
+              <TableCell align="right">{row.borrowAPY}</TableCell>
+              <TableCell align="right">{row.Liquidity}</TableCell>
+              <TableCell align="right">
+                <Button variant="outlined" size="small">
+                  Borrow
+                </Button>
+              </TableCell>
             </StyledTableRow>
           ))}
         </TableBody>

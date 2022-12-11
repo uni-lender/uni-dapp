@@ -5,7 +5,7 @@ import { useWeb3Context } from '@/contexts/web3Context';
 import { truncateTextMid } from '@/utils/format';
 
 const StyledHeader = styled.header`
-  padding: 40px;
+  padding: 40px 100px;
   color: #fff;
   font-weight: bold;
   display: flex;

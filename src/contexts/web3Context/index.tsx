@@ -7,14 +7,14 @@ import React, {
 } from 'react';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import { useWeb3React } from '@web3-react/core';
-import { ethers } from 'ethers';
 import { Web3Provider } from '@ethersproject/providers';
+import { ethers } from 'ethers';
 
-import univ3Abi from '@/abi/univ3.json';
 import {
   LAST_CONNECTED_LOCAL_SESSION_NAME,
   WALLET_TYPE,
 } from '@/static/constants/wallet';
+import { RPC_HOST } from '@/static/constants/contract';
 
 export const injectedConnector = new InjectedConnector({
   supportedChainIds: [
@@ -35,6 +35,8 @@ export type Web3ContextValue = {
   account: string;
   connectWallet: () => void;
   disconnectWallet: () => void;
+  provider: ethers.providers.JsonRpcProvider;
+  signer: ethers.providers.JsonRpcSigner;
 };
 const Web3Context = React.createContext({} as Web3ContextValue);
 export const Web3ContextProvider = ({ children }: { children: ReactNode }) => {
@@ -60,19 +62,6 @@ export const Web3ContextProvider = ({ children }: { children: ReactNode }) => {
       throw err;
     }
   }, [deactivate]);
-  const callFunction = useCallback(async () => {
-    const provider = new ethers.providers.Web3Provider(
-      (window as any).ethereum
-    );
-    const constractAddress = '0xC36442b4a4522E871399CD717aBDD847Ab11FE88';
-    const univ3Contract = new ethers.Contract(
-      constractAddress,
-      univ3Abi,
-      provider
-    );
-    const ret = await univ3Contract.positions(27455);
-    console.log('ret', ret.token0);
-  }, []);
   useEffect(() => {
     const init = async () => {
       const lastConnected = localStorage.getItem(
@@ -91,14 +80,16 @@ export const Web3ContextProvider = ({ children }: { children: ReactNode }) => {
     init();
   }, [connectWallet]);
   const value = useMemo(() => {
+    const provider = new ethers.providers.JsonRpcProvider(RPC_HOST);
     return {
       active,
       account: account || '',
       connectWallet,
       disconnectWallet,
-      callFunction,
+      provider,
+      signer: provider.getSigner(0),
     };
-  }, [account, active, connectWallet, disconnectWallet, callFunction]);
+  }, [account, active, connectWallet, disconnectWallet]);
 
   return <Web3Context.Provider value={value}>{children}</Web3Context.Provider>;
 };

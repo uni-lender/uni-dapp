@@ -1,14 +1,12 @@
 import { ethers } from 'ethers';
 
-import { UNIV3_ADDRESS } from '@/static/constants/contract';
+import { RPC_HOST, UNIV3_ADDRESS } from '@/static/constants/contract';
 import { Erc20__factory, Univ3__factory } from '@/contracts';
 
 console.log('hello univ3');
 
 (async () => {
-  const provider = new ethers.providers.JsonRpcProvider(
-    'http://localhost:8545'
-  );
+  const provider = new ethers.providers.JsonRpcProvider(RPC_HOST);
   const signer = provider.getSigner(0);
   const blockNumber = await provider.getBlockNumber();
   console.log('blockNumber:', blockNumber);
