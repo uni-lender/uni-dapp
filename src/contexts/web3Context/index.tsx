@@ -23,6 +23,7 @@ export const injectedConnector = new InjectedConnector({
     4, // Rinkeby
     5, // Goerli
     42, // Kovan
+    1337, // localhost:8545
   ],
 });
 export const getLibrary = (provider: any) => {
@@ -41,7 +42,6 @@ export type Web3ContextValue = {
 const Web3Context = React.createContext({} as Web3ContextValue);
 export const Web3ContextProvider = ({ children }: { children: ReactNode }) => {
   const { active, account, activate, deactivate } = useWeb3React();
-
   const connectWallet = useCallback(async () => {
     try {
       await activate(injectedConnector);

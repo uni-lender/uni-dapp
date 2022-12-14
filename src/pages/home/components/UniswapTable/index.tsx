@@ -38,17 +38,16 @@ type UniswapRow = {
   supplied: boolean;
 };
 
-const USER_ADDRESS = '0xa7c43e2057d89b6946b8865efc8bee3a4ea7d28d';
 const UniswapTable = () => {
-  const { signer } = useWeb3Context();
+  const { signer, account } = useWeb3Context();
   const [list, setList] = useState([] as Array<UniswapRow>);
 
   const getTableData = useCallback(async () => {
     const univ3 = Univ3__factory.connect(UNIV3_ADDRESS, signer);
-    const balance = await univ3.balanceOf(USER_ADDRESS);
+    const balance = await univ3.balanceOf(account);
     const ret = [];
     for (let i = 0; i < Math.min(20, balance.toNumber()); i++) {
-      const tokenId = await univ3.tokenOfOwnerByIndex(USER_ADDRESS, i);
+      const tokenId = await univ3.tokenOfOwnerByIndex(account, i);
       const position = await univ3.positions(tokenId);
       const token0 = await Erc20__factory.connect(
         position.token0,
@@ -69,7 +68,7 @@ const UniswapTable = () => {
       } as UniswapRow);
     }
     setList(ret);
-  }, [signer]);
+  }, [account, signer]);
   useEffect(() => {
     getTableData();
   }, [getTableData]);
@@ -91,8 +90,8 @@ const UniswapTable = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {list.map((row) => (
-            <StyledTableRow key={row.asset}>
+          {list.map((row, index) => (
+            <StyledTableRow key={index}>
               <IconWrap component="th" scope="row">
                 <TokenIcon name={row.token0Symbol} />
                 <TokenIcon name={row.token1Symbol} />
