@@ -47,6 +47,9 @@ const ERC20Table = () => {
   const [walletBalance, setWalletBalance] = useState('');
   useEffect(() => {
     const getBalance = async () => {
+      if (!account || !signer) {
+        return;
+      }
       const wethContract = Erc20__factory.connect(WETH_ADDRESS, signer);
       const walletNumber = await wethContract.balanceOf(account);
       const ret = Number(ethers.utils.formatEther(walletNumber)).toFixed(2);

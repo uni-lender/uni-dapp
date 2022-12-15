@@ -26,16 +26,6 @@ const StyledHeader = styled.header`
     width: 32px;
     cursor: pointer;
   }
-  button {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-    color: #ffffff;
-    &:hover {
-      opacity: 0.8;
-      background-color: var(--primary-color);
-      border-color: var(--primary-color);
-    }
-  }
 `;
 export const Header = () => {
   const { active, account, connectWallet, disconnectWallet } = useWeb3Context();

@@ -9,6 +9,8 @@ import Paper from '@mui/material/Paper';
 import { Button, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 
+import { SupplyModal } from '../SupplyModal';
+
 import { UNIV3_ADDRESS } from '@/static/constants/contract';
 import { Erc20__factory, Univ3__factory } from '@/contracts';
 import { useWeb3Context } from '@/contexts/web3Context';
@@ -27,7 +29,7 @@ const StyledTableRow = styled(TableRow)(() => ({
   },
 }));
 
-type UniswapRow = {
+export type UniswapRow = {
   asset: string;
   token0Symbol: TokenName;
   token1Symbol: TokenName;
@@ -36,13 +38,19 @@ type UniswapRow = {
   fee: number;
   value: number;
   supplied: boolean;
+  tokenId: string;
 };
 
 const UniswapTable = () => {
   const { signer, account } = useWeb3Context();
   const [list, setList] = useState([] as Array<UniswapRow>);
+  const [open, toggleOpen] = useState(false);
+  const [supplyData, setSupplyData] = useState({} as UniswapRow);
 
   const getTableData = useCallback(async () => {
+    if (!account || !signer) {
+      return;
+    }
     const univ3 = Univ3__factory.connect(UNIV3_ADDRESS, signer);
     const balance = await univ3.balanceOf(account);
     const ret = [];
@@ -65,10 +73,15 @@ const UniswapTable = () => {
         tickLower: position.tickLower,
         tickUpper: position.tickUpper,
         value: 1,
+        tokenId: tokenId.toString(),
       } as UniswapRow);
     }
     setList(ret);
   }, [account, signer]);
+  const openSupply = (row: UniswapRow) => {
+    setSupplyData(row);
+    toggleOpen(true);
+  };
   useEffect(() => {
     getTableData();
   }, [getTableData]);
@@ -107,6 +120,7 @@ const UniswapTable = () => {
                   variant="outlined"
                   style={{ marginRight: '20px' }}
                   size="small"
+                  onClick={() => openSupply(row)}
                 >
                   Supply
                 </Button>
@@ -118,6 +132,13 @@ const UniswapTable = () => {
           ))}
         </TableBody>
       </Table>
+      <SupplyModal
+        open={open}
+        supplyData={supplyData}
+        onClose={() => {
+          toggleOpen(false);
+        }}
+      />
     </TableContainer>
   );
 };

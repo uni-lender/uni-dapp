@@ -15,7 +15,7 @@ body {
     }
 }
 
-body .MuiPaper-root {
+body .MuiTableContainer-root {
     background-color: transparent;
     box-shadow: none;
     border: 1px solid var(--border-color);
@@ -35,6 +35,11 @@ body .MuiPaper-root {
         border-color: var(--border-color);
     }
 }
+.MuiDialog-paperScrollPaper {
+    background: #ffffff;
+    padding: 20px;
+    text-align: center;
+}
 .MuiTypography-h6 {
     color: var(--header-color);
 }
@@ -46,6 +51,20 @@ body .MuiButton-outlinedPrimary {
         opacity: 0.8;
     }
 }
+body .MuiButton-textPrimary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #ffffff;
+    &:hover {
+      opacity: 0.8;
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+    &.Mui-disabled {
+        opacity: 0.6;
+        color: var(--text-color);
+    }
+ }
 :root {
     --bg: #191b1f;
     --primary-color: #ff007a;
