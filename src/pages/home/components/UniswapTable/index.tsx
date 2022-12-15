@@ -10,6 +10,7 @@ import { Button, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 
 import { SupplyModal } from '../SupplyModal';
+import { WithdrawModal } from '../Withdraw';
 
 import { UNIV3_ADDRESS } from '@/static/constants/contract';
 import { Erc20__factory, Univ3__factory } from '@/contracts';
@@ -44,8 +45,10 @@ export type UniswapRow = {
 const UniswapTable = () => {
   const { signer, account } = useWeb3Context();
   const [list, setList] = useState([] as Array<UniswapRow>);
-  const [open, toggleOpen] = useState(false);
+  const [supplyOpen, toggleSupplyOpen] = useState(false);
   const [supplyData, setSupplyData] = useState({} as UniswapRow);
+  const [withdrawOpen, toggleWithdrawOpen] = useState(false);
+  const [withdrawData, setWithdrawData] = useState({} as UniswapRow);
 
   const getTableData = useCallback(async () => {
     if (!account || !signer) {
@@ -80,7 +83,11 @@ const UniswapTable = () => {
   }, [account, signer]);
   const openSupply = (row: UniswapRow) => {
     setSupplyData(row);
-    toggleOpen(true);
+    toggleSupplyOpen(true);
+  };
+  const openWithdraw = (row: UniswapRow) => {
+    setWithdrawData(row);
+    toggleWithdrawOpen(true);
   };
   useEffect(() => {
     getTableData();
@@ -124,7 +131,11 @@ const UniswapTable = () => {
                 >
                   Supply
                 </Button>
-                <Button variant="outlined" size="small">
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={() => openWithdraw(row)}
+                >
                   Withdraw
                 </Button>
               </TableCell>
@@ -133,10 +144,17 @@ const UniswapTable = () => {
         </TableBody>
       </Table>
       <SupplyModal
-        open={open}
+        open={supplyOpen}
         supplyData={supplyData}
         onClose={() => {
-          toggleOpen(false);
+          toggleSupplyOpen(false);
+        }}
+      />
+      <WithdrawModal
+        open={withdrawOpen}
+        withdrawData={withdrawData}
+        onClose={() => {
+          toggleWithdrawOpen(false);
         }}
       />
     </TableContainer>
