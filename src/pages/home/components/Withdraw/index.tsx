@@ -56,6 +56,7 @@ const StyledDialogContentText = styled(DialogContentText)`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-radius: 4px;
   span {
     color: red;
     font-size: 18px;
@@ -100,7 +101,6 @@ export const WithdrawModal = ({
           width="200px"
           onClick={() => isChecked(!checked)}
           className={checked ? 'active' : ''}
-          onLoad={() => console.log('onLoad')}
         />
       ) : (
         <LoadingWrap>

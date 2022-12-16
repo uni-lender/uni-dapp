@@ -10,6 +10,9 @@ import { Button, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 
+import { BorrowRow } from '../MyBorrowTable';
+import { BorrowModal } from '../BorrowModal';
+
 import { TokenIcon, TokenName } from '@/components/tokenIcon';
 import { useWeb3Context } from '@/contexts/web3Context';
 import { Erc20__factory } from '@/contracts';
@@ -40,7 +43,7 @@ const createData = (
   return { name, balance, supplyAPY, borrowAPY, liquidity, tvl };
 };
 
-const rows = [createData('WETH', 1, 159, 6.0, 24, 4.0)];
+const rows = [createData('WETH', 1, 159, 6.0, 243, 4.0)];
 
 const ERC20Table = () => {
   const { account, signer } = useWeb3Context();
@@ -57,6 +60,12 @@ const ERC20Table = () => {
     };
     getBalance();
   }, [account, signer]);
+  const [borrowOpen, toggleBorrowOpen] = useState(false);
+  const [borrowData, setBorrowData] = useState({} as BorrowRow);
+  const openBorrow = (row: BorrowRow) => {
+    toggleBorrowOpen(true);
+    setBorrowData(row);
+  };
   return (
     <TableContainer component={Paper}>
       <Typography variant="h6" component="div" sx={{ m: 3 }}>
@@ -87,7 +96,11 @@ const ERC20Table = () => {
               <TableCell align="right">{row.borrowAPY}</TableCell>
               <TableCell align="right">{row.liquidity}</TableCell>
               <TableCell align="right">
-                <Button variant="outlined" size="small">
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={() => openBorrow(row)}
+                >
                   Borrow
                 </Button>
               </TableCell>
@@ -95,6 +108,14 @@ const ERC20Table = () => {
           ))}
         </TableBody>
       </Table>
+      <BorrowModal
+        open={borrowOpen}
+        borrowData={borrowData}
+        onClose={() => {
+          toggleBorrowOpen(false);
+          setBorrowData({} as BorrowRow);
+        }}
+      ></BorrowModal>
     </TableContainer>
   );
 };

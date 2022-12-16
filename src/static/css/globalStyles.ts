@@ -65,6 +65,19 @@ body .MuiButton-textPrimary {
         color: var(--text-color);
     }
  }
+ .Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: var(--bg) !important;
+ }
+ .Mui-error {
+    &.Mui-focused .MuiOutlinedInput-notchedOutline {
+        border-color: #d32f2f !important;
+    }
+ }
+ body .MuiDialogTitle-root {
+    text-align: left;
+    color: var(--bg);
+    padding-left: 0;
+ }
 :root {
     --bg: #191b1f;
     --primary-color: #ff007a;

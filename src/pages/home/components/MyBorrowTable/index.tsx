@@ -7,6 +7,9 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Button, Typography } from '@mui/material';
+import { useState } from 'react';
+
+import { BorrowModal } from '../BorrowModal';
 
 import { TokenIcon, TokenName } from '@/components/tokenIcon';
 
@@ -27,20 +30,34 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     border: 0,
   },
 }));
-
+export type BorrowRow = {
+  name: TokenName;
+  balance: number;
+  supplyAPY: number;
+  borrowAPY: number;
+  liquidity: number;
+  tvl?: number;
+};
 const createData = (
   name: TokenName,
   balance: number,
   supplyAPY: number,
   borrowAPY: number,
-  Liquidity: number
+  liquidity: number
 ) => {
-  return { name, balance, supplyAPY, borrowAPY, Liquidity };
+  return { name, balance, supplyAPY, borrowAPY, liquidity } as BorrowRow;
 };
 
 const rows = [createData('WETH', 159, 6.0, 24, 4.0)];
 
 const MyBorrowTable = () => {
+  const [borrowOpen, toggleBorrowOpen] = useState(false);
+  const [borrowData, setBorrowData] = useState({} as BorrowRow);
+  const openBorrow = (row: BorrowRow) => {
+    toggleBorrowOpen(true);
+    setBorrowData(row);
+  };
+
   return (
     <TableContainer component={Paper} sx={{ mb: 4 }}>
       <Typography variant="h6" component="div" sx={{ m: 3 }}>
@@ -69,6 +86,7 @@ const MyBorrowTable = () => {
                   variant="outlined"
                   style={{ marginRight: '20px' }}
                   size="small"
+                  onClick={() => openBorrow(row)}
                 >
                   Borrow More
                 </Button>{' '}
@@ -80,6 +98,14 @@ const MyBorrowTable = () => {
           ))}
         </TableBody>
       </Table>
+      <BorrowModal
+        open={borrowOpen}
+        borrowData={borrowData}
+        onClose={() => {
+          toggleBorrowOpen(false);
+          setBorrowData({} as BorrowRow);
+        }}
+      />
     </TableContainer>
   );
 };
