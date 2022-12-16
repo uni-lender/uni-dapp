@@ -58,6 +58,7 @@ export const BorrowModal = ({
       }}
     >
       <DialogTitle>Borrow {borrowData?.name}</DialogTitle>
+      <span style={{ textAlign: 'right' }}>Borrow Limit: $30</span>
       <TextField
         onChange={handleChange}
         variant="outlined"

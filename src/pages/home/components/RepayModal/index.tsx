@@ -54,6 +54,7 @@ export const RepayModal = ({ open, onClose, repayData }: RepayModalProps) => {
       }}
     >
       <DialogTitle>Repay {repayData?.name}</DialogTitle>
+      <span style={{ textAlign: 'right' }}>Repay Limit: $30</span>
       <TextField
         onChange={handleChange}
         variant="outlined"
