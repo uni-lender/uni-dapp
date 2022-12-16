@@ -9,8 +9,8 @@ import Paper from '@mui/material/Paper';
 import { Button, Typography } from '@mui/material';
 import { useState } from 'react';
 
-import { BorrowModal } from '../BorrowModal';
-import { RepayModal } from '../RepayModal';
+import { BorrowModal } from '../BorrowERC20Modal';
+import { RepayModal } from '../RepayERC20Modal';
 
 import { TokenIcon, TokenName } from '@/components/tokenIcon';
 

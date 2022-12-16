@@ -10,7 +10,7 @@ import { Button, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 
 import { SupplyModal } from '../SupplyModal';
-import { WithdrawModal } from '../Withdraw';
+import { WithdrawModal } from '../WithdrawModal';
 
 import { UNIV3_ADDRESS } from '@/static/constants/contract';
 import { Erc20__factory, Univ3__factory } from '@/contracts';

@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 
 import { BorrowRow } from '../MyBorrowTable';
-import { BorrowModal } from '../BorrowModal';
+import { BorrowModal } from '../BorrowERC20Modal';
 
 import { TokenIcon, TokenName } from '@/components/tokenIcon';
 import { useWeb3Context } from '@/contexts/web3Context';
