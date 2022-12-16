@@ -7,16 +7,14 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Button, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { ethers } from 'ethers';
+import { useState, useEffect } from 'react';
 
 import { BorrowRow } from '../MyBorrowTable';
 import { BorrowModal } from '../BorrowERC20Modal';
+import { SupplyERC20Modal } from '../SupplyERC20Modal';
 
 import { TokenIcon, TokenName } from '@/components/tokenIcon';
-import { useWeb3Context } from '@/contexts/web3Context';
-import { Erc20__factory } from '@/contracts';
-import { WETH_ADDRESS } from '@/static/constants/contract';
+import { useWalletWETH } from '@/hooks/useWalletWETH';
 
 const IconWrap = styled(TableCell)`
   display: flex;
@@ -46,25 +44,26 @@ const createData = (
 const rows = [createData('WETH', 1, 159, 6.0, 243, 4.0)];
 
 const ERC20Table = () => {
-  const { account, signer } = useWeb3Context();
+  const { getWalletWETH } = useWalletWETH();
   const [walletBalance, setWalletBalance] = useState('');
   useEffect(() => {
     const getBalance = async () => {
-      if (!account || !signer) {
-        return;
-      }
-      const wethContract = Erc20__factory.connect(WETH_ADDRESS, signer);
-      const walletNumber = await wethContract.balanceOf(account);
-      const ret = Number(ethers.utils.formatEther(walletNumber)).toFixed(2);
-      setWalletBalance(ret);
+      const ret = await getWalletWETH();
+      setWalletBalance(ret ?? '');
     };
     getBalance();
-  }, [account, signer]);
+  }, [getWalletWETH]);
   const [borrowOpen, toggleBorrowOpen] = useState(false);
   const [borrowData, setBorrowData] = useState({} as BorrowRow);
   const openBorrow = (row: BorrowRow) => {
     toggleBorrowOpen(true);
     setBorrowData(row);
+  };
+  const [supplyOpen, toggleSupplyOpen] = useState(false);
+  const [supplyData, setSupplyData] = useState({} as BorrowRow);
+  const openSupply = (row: BorrowRow) => {
+    toggleSupplyOpen(true);
+    setSupplyData(row);
   };
   return (
     <TableContainer component={Paper}>
@@ -99,6 +98,16 @@ const ERC20Table = () => {
                 <Button
                   variant="outlined"
                   size="small"
+                  onClick={() => openSupply(row)}
+                  style={{
+                    marginRight: '20px',
+                  }}
+                >
+                  Supply
+                </Button>
+                <Button
+                  variant="outlined"
+                  size="small"
                   onClick={() => openBorrow(row)}
                 >
                   Borrow
@@ -116,6 +125,14 @@ const ERC20Table = () => {
           setBorrowData({} as BorrowRow);
         }}
       ></BorrowModal>
+      <SupplyERC20Modal
+        open={supplyOpen}
+        supplyData={supplyData}
+        onClose={() => {
+          toggleSupplyOpen(false);
+          setSupplyData({} as BorrowRow);
+        }}
+      />
     </TableContainer>
   );
 };
