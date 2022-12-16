@@ -11,10 +11,10 @@ import styled from 'styled-components';
 import { BorrowRow } from '../MyBorrowTable';
 
 import { TokenIcon } from '@/components/tokenIcon';
-export type BorrowModalProps = {
+export type RepayModalProps = {
   open: boolean;
   onClose?: () => void;
-  borrowData: BorrowRow;
+  repayData: BorrowRow;
 };
 const ContentWrap = styled.div`
   background: #eee;
@@ -30,11 +30,7 @@ const ContentWrap = styled.div`
     padding: 6px 0;
   }
 `;
-export const BorrowModal = ({
-  open,
-  onClose,
-  borrowData,
-}: BorrowModalProps) => {
+export const RepayModal = ({ open, onClose, repayData }: RepayModalProps) => {
   const [value, setValue] = useState<string>('');
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value === '') {
@@ -57,7 +53,7 @@ export const BorrowModal = ({
         onClose && onClose();
       }}
     >
-      <DialogTitle>Borrow {borrowData?.name}</DialogTitle>
+      <DialogTitle>Repay {repayData?.name}</DialogTitle>
       <TextField
         onChange={handleChange}
         variant="outlined"
@@ -65,34 +61,20 @@ export const BorrowModal = ({
         helperText={error ? 'Invalid amount' : ''}
         InputProps={{
           startAdornment: (
-            <TokenIcon
-              name={borrowData?.name}
-              style={{ marginRight: '10px' }}
-            />
+            <TokenIcon name={repayData?.name} style={{ marginRight: '10px' }} />
           ),
         }}
         value={value}
         placeholder="0"
       />
       <ContentWrap>
+        <DialogContentText>Borrowing: $30 </DialogContentText>
         <DialogContentText>
-          Borrowing: $30{' '}
-          {value !== undefined && value !== '' && (
-            <span
-              style={{
-                color: value && Number(value) > 20 ? 'red' : 'green',
-              }}
-            >
-              +{value}
-            </span>
-          )}
-        </DialogContentText>
-        <DialogContentText>
-          Borrow APY: <span>{borrowData?.borrowAPY}</span>
+          Borrow APY: <span>{repayData?.borrowAPY}</span>
         </DialogContentText>
       </ContentWrap>
       <Button disabled={error || value === ''}>
-        Borrow {value === undefined ? 0 : value} {borrowData.name}
+        Repay {value === undefined ? 0 : value} {repayData.name}
       </Button>
     </Dialog>
   );

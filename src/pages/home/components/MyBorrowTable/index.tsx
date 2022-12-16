@@ -10,6 +10,7 @@ import { Button, Typography } from '@mui/material';
 import { useState } from 'react';
 
 import { BorrowModal } from '../BorrowModal';
+import { RepayModal } from '../RepayModal';
 
 import { TokenIcon, TokenName } from '@/components/tokenIcon';
 
@@ -57,6 +58,12 @@ const MyBorrowTable = () => {
     toggleBorrowOpen(true);
     setBorrowData(row);
   };
+  const [repayOpen, toggleRelayOpen] = useState(false);
+  const [repayData, setRepayData] = useState({} as BorrowRow);
+  const openRepay = (row: BorrowRow) => {
+    toggleRelayOpen(true);
+    setRepayData(row);
+  };
 
   return (
     <TableContainer component={Paper} sx={{ mb: 4 }}>
@@ -90,7 +97,11 @@ const MyBorrowTable = () => {
                 >
                   Borrow More
                 </Button>{' '}
-                <Button variant="outlined" size="small">
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={() => openRepay(row)}
+                >
                   Repay
                 </Button>
               </TableCell>
@@ -106,6 +117,14 @@ const MyBorrowTable = () => {
           setBorrowData({} as BorrowRow);
         }}
       />
+      <RepayModal
+        open={repayOpen}
+        repayData={repayData}
+        onClose={() => {
+          toggleRelayOpen(false);
+          setRepayData({} as BorrowRow);
+        }}
+      ></RepayModal>
     </TableContainer>
   );
 };
