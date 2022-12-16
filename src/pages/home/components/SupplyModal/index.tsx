@@ -33,7 +33,6 @@ const StyledCircularProgress = styled(CircularProgress)`
   color: var(--primary-color) !important;
 `;
 const Image = styled.img`
-  cursor: pointer;
   box-sizing: border-box;
   margin: 20px 100px;
   &.active {
@@ -71,7 +70,6 @@ export const SupplyModal = ({
 }: SupplyModalProps) => {
   const { signer } = useWeb3Context();
   const [imgObj, setImgObj] = useState({} as ImgObj);
-  const [checked, isChecked] = useState(false);
   useEffect(() => {
     const getData = async () => {
       if (!supplyData || !Object.keys(supplyData).length) {
@@ -99,8 +97,7 @@ export const SupplyModal = ({
           src={imgObj.image}
           alt={imgObj.name}
           width="200px"
-          onClick={() => isChecked(!checked)}
-          className={checked ? 'active' : ''}
+          className={'active'}
         />
       ) : (
         <LoadingWrap>
@@ -109,10 +106,10 @@ export const SupplyModal = ({
       )}
 
       <StyledDialogContentText>
-        Current Borrow Limit: $20 {checked && <span> +$20</span>}
+        Current Borrow Limit: $20 <span> +$20</span>
       </StyledDialogContentText>
 
-      <Button disabled={!checked}>Supply nft</Button>
+      <Button>Supply nft</Button>
     </Dialog>
   );
 };
