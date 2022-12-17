@@ -14,8 +14,13 @@ import { BorrowRow } from '../MyBorrowTable';
 
 import { TokenIcon } from '@/components/tokenIcon';
 import { useWalletWETH } from '@/hooks/useWalletWETH';
-import { Erc20Reverse__factory, Erc20__factory } from '@/contracts';
 import {
+  Controller__factory,
+  Erc20Reverse__factory,
+  Erc20__factory,
+} from '@/contracts';
+import {
+  CONTROLLER_ADDRESS,
   ERC20_RESERVE_ADDRESS,
   WETH_ADDRESS,
 } from '@/static/constants/contract';
@@ -66,7 +71,7 @@ export const SupplyERC20Modal = ({
 
   const { getWalletWETH } = useWalletWETH();
   const [walletBalance, setWalletBalance] = useState('');
-  const [borrowedValue, setBorrowedValue] = useState('');
+  const [borrowLimit, setBorrowLimit] = useState('');
 
   const error = useMemo(() => {
     return (
@@ -85,18 +90,18 @@ export const SupplyERC20Modal = ({
     getBalance();
   }, [getWalletWETH]);
   useEffect(() => {
-    const getBorrowedValue = async () => {
+    const getBorrowLimit = async () => {
       if (!signer || !account) {
         return;
       }
-      const erc20Reserve = Erc20Reverse__factory.connect(
-        ERC20_RESERVE_ADDRESS,
+      const controller = Controller__factory.connect(
+        CONTROLLER_ADDRESS,
         signer
       );
-      const obj = await erc20Reserve.balanceOf(account);
-      setBorrowedValue(formatWETH(obj));
+      const ret = await controller.getAccountLiquidity(account);
+      setBorrowLimit(formatWETH(ret));
     };
-    getBorrowedValue();
+    getBorrowLimit();
   }, [account, signer]);
   const handleClose = () => {
     setValue('');
@@ -154,7 +159,7 @@ export const SupplyERC20Modal = ({
         />
         <ContentWrap>
           <DialogContentText>
-            Borrowing: {borrowedValue}WETH
+            Borrow Limit: {borrowLimit}WETH
             {value !== undefined && value !== '' && (
               <span
                 style={{
