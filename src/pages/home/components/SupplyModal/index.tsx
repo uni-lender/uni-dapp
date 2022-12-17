@@ -89,6 +89,10 @@ export const SupplyModal = ({
       setImgObj({} as ImgObj);
     };
   }, [signer, supplyData]);
+  const supplyNFT = async () => {
+    const univ3 = Univ3__factory.connect(UNIV3_ADDRESS, signer);
+    console.log(univ3);
+  };
   return (
     <Dialog open={open} onClose={onClose}>
       <StyledDialogTitle>Supply Uniswap</StyledDialogTitle>
@@ -109,7 +113,7 @@ export const SupplyModal = ({
         Current Borrow Limit: $20 <span> +$20</span>
       </StyledDialogContentText>
 
-      <Button>Supply nft</Button>
+      <Button onClick={supplyNFT}>Supply nft</Button>
     </Dialog>
   );
 };

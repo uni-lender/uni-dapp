@@ -7,7 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Button, Typography } from '@mui/material';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import { BorrowRow } from '../MyBorrowTable';
 import { BorrowModal } from '../BorrowERC20Modal';
@@ -46,13 +46,13 @@ const rows = [createData('WETH', 1, 159, 6.0, 243, 4.0)];
 const ERC20Table = () => {
   const { getWalletWETH } = useWalletWETH();
   const [walletBalance, setWalletBalance] = useState('');
-  useEffect(() => {
-    const getBalance = async () => {
-      const ret = await getWalletWETH();
-      setWalletBalance(ret ?? '');
-    };
-    getBalance();
+  const getBalance = useCallback(async () => {
+    const ret = await getWalletWETH();
+    setWalletBalance(ret ?? '');
   }, [getWalletWETH]);
+  useEffect(() => {
+    getBalance();
+  }, [getBalance]);
   const [borrowOpen, toggleBorrowOpen] = useState(false);
   const [borrowData, setBorrowData] = useState({} as BorrowRow);
   const openBorrow = (row: BorrowRow) => {
@@ -132,6 +132,7 @@ const ERC20Table = () => {
           toggleSupplyOpen(false);
           setSupplyData({} as BorrowRow);
         }}
+        successCallback={() => setTimeout(() => getBalance(), 300)}
       />
     </TableContainer>
   );

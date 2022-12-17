@@ -14,7 +14,6 @@ import {
   LAST_CONNECTED_LOCAL_SESSION_NAME,
   WALLET_TYPE,
 } from '@/static/constants/wallet';
-import { RPC_HOST } from '@/static/constants/contract';
 
 export const injectedConnector = new InjectedConnector({
   supportedChainIds: [
@@ -54,8 +53,8 @@ export const Web3ContextProvider = ({ children }: { children: ReactNode }) => {
   }, [activate]);
   const disconnectWallet = useCallback(async () => {
     try {
-      await deactivate();
       localStorage.removeItem(LAST_CONNECTED_LOCAL_SESSION_NAME);
+      await deactivate();
     } catch (err) {
       console.error('disconnect wallet error');
       console.error(err);
@@ -80,14 +79,19 @@ export const Web3ContextProvider = ({ children }: { children: ReactNode }) => {
     init();
   }, [connectWallet]);
   const value = useMemo(() => {
-    const provider = new ethers.providers.JsonRpcProvider(RPC_HOST);
+    const provider = new ethers.providers.Web3Provider(
+      (window as any).ethereum
+    );
+    if (!(window as any).ethereum) {
+      return {} as Web3ContextValue;
+    }
     return {
       active,
       account: account || '',
       connectWallet,
       disconnectWallet,
-      provider,
-      signer: provider.getSigner(0),
+      provider: provider,
+      signer: provider.getSigner(),
     };
   }, [account, active, connectWallet, disconnectWallet]);
 
