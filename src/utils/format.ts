@@ -5,6 +5,6 @@ export const truncateTextMid = (text: string, start = 4, end = 4) =>
     ? text.replace(text.substring(start, text.length - end), '...')
     : text;
 
-export const formatWETH = (value: BigNumber, decimal = 2) => {
+export const formatWETH = (value: BigNumber, decimal = 3) => {
   return Number(ethers.utils.formatEther(value)).toFixed(decimal);
 };

@@ -5,8 +5,6 @@ import {
   TextField,
   Button,
   CircularProgress,
-  Snackbar,
-  Alert,
 } from '@mui/material';
 import { useState, useMemo, useEffect } from 'react';
 import styled from 'styled-components';
@@ -23,6 +21,7 @@ import {
 } from '@/static/constants/contract';
 import { useWeb3Context } from '@/contexts/web3Context';
 import { formatWETH } from '@/utils/format';
+import { SuccessToast } from '@/components/successToast';
 export type SupplyERC20ModalProps = {
   open: boolean;
   onClose?: () => void;
@@ -43,7 +42,7 @@ const ContentWrap = styled.div`
     padding: 6px 0;
   }
 `;
-const StyledCircularProgress = styled(CircularProgress)`
+export const StyledCircularProgress = styled(CircularProgress)`
   color: var(--text-color) !important;
   margin-left: 10px;
 `;
@@ -114,9 +113,7 @@ export const SupplyERC20Modal = ({
         signer
       );
       const erc20 = Erc20__factory.connect(WETH_ADDRESS, signer);
-
       const amount = ethers.utils.parseUnits(value, 18);
-
       const tx = await erc20.approve(ERC20_RESERVE_ADDRESS, amount);
       await tx.wait();
 
@@ -180,17 +177,9 @@ export const SupplyERC20Modal = ({
           {loading && <StyledCircularProgress size={20} />}
         </Button>
       </Dialog>
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-        open={toastOpen}
-        autoHideDuration={1000}
-        onClose={() => toggleToastOpen(false)}
-      >
-        <Alert severity="success">transaction successed</Alert>
-      </Snackbar>
+      {toastOpen && (
+        <SuccessToast open={toastOpen} onClose={() => toggleToastOpen(false)} />
+      )}
     </>
   );
 };
