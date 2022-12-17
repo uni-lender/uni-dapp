@@ -7,11 +7,18 @@ import {
 } from '@mui/material';
 import { useState, useMemo, useEffect } from 'react';
 import styled from 'styled-components';
+import { ethers } from 'ethers';
 
 import { BorrowRow } from '../MyBorrowTable';
 
 import { TokenIcon } from '@/components/tokenIcon';
 import { useWalletWETH } from '@/hooks/useWalletWETH';
+import { Erc20Reverse__factory, Erc20__factory } from '@/contracts';
+import {
+  ERC20_RESERVE_ADDRESS,
+  WETH_ADDRESS,
+} from '@/static/constants/contract';
+import { useWeb3Context } from '@/contexts/web3Context';
 export type SupplyERC20ModalProps = {
   open: boolean;
   onClose?: () => void;
@@ -47,11 +54,20 @@ export const SupplyERC20Modal = ({
     }
     setValue(e.target.value);
   };
-  const error = useMemo(() => {
-    return value !== '' && (Number(value) === 0 || Number(value) > 10);
-  }, [value]);
+
   const { getWalletWETH } = useWalletWETH();
   const [walletBalance, setWalletBalance] = useState('');
+  const [borrowedValue, setBorrowedValue] = useState('');
+
+  const error = useMemo(() => {
+    return (
+      value !== '' &&
+      (Number(value) === 0 || Number(value) > Number(walletBalance))
+    );
+  }, [value, walletBalance]);
+
+  const { signer, account } = useWeb3Context();
+
   useEffect(() => {
     const getBalance = async () => {
       const ret = await getWalletWETH();
@@ -59,6 +75,35 @@ export const SupplyERC20Modal = ({
     };
     getBalance();
   }, [getWalletWETH]);
+  useEffect(() => {
+    const getBorrowedValue = async () => {
+      if (!signer || !account) {
+        return;
+      }
+      const erc20Reserve = Erc20Reverse__factory.connect(
+        ERC20_RESERVE_ADDRESS,
+        signer
+      );
+      const obj = await erc20Reserve.balanceOf(account);
+      setBorrowedValue(obj.toString());
+    };
+    getBorrowedValue();
+  }, [account, signer]);
+  const supplyERC20 = async () => {
+    const erc20Reserve = Erc20Reverse__factory.connect(
+      ERC20_RESERVE_ADDRESS,
+      signer
+    );
+
+    const erc20 = Erc20__factory.connect(WETH_ADDRESS, signer);
+    const amount = ethers.utils.parseUnits(value, 18);
+    const tx = await erc20.approve(ERC20_RESERVE_ADDRESS, amount);
+    const approveRet = await tx.wait();
+    console.log('approveRet', approveRet);
+    console.log('amount', amount.toString());
+    const ret = await erc20Reserve.supply(amount);
+    console.log('ret', ret);
+  };
   return (
     <Dialog
       open={open}
@@ -90,7 +135,7 @@ export const SupplyERC20Modal = ({
       />
       <ContentWrap>
         <DialogContentText>
-          Borrowing: $30{' '}
+          Borrowing: {borrowedValue}WETH
           {value !== undefined && value !== '' && (
             <span
               style={{
@@ -105,7 +150,7 @@ export const SupplyERC20Modal = ({
           Supply APY: <span>{supplyData?.supplyAPY}</span>
         </DialogContentText>
       </ContentWrap>
-      <Button disabled={error || value === ''}>
+      <Button disabled={error || value === ''} onClick={supplyERC20}>
         Supply {value === undefined ? 0 : value} {supplyData.name}
       </Button>
     </Dialog>

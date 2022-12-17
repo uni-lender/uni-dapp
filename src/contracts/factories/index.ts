@@ -2,4 +2,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export { Erc20__factory } from "./Erc20__factory";
+export { Erc20Reverse__factory } from "./Erc20Reverse__factory";
+export { Erc721Reserve__factory } from "./Erc721Reserve__factory";
 export { Univ3__factory } from "./Univ3__factory";
