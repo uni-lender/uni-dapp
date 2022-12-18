@@ -9,10 +9,21 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { UniswapRow } from '../UniswapTable';
+import { StyledCircularProgress } from '../SupplyERC20Modal';
 
 import { useWeb3Context } from '@/contexts/web3Context';
-import { Univ3__factory } from '@/contracts';
-import { UNIV3_ADDRESS } from '@/static/constants/contract';
+import {
+  Controller__factory,
+  Erc721Reserve__factory,
+  Univ3__factory,
+} from '@/contracts';
+import {
+  CONTROLLER_ADDRESS,
+  ERC721_RESERVE_ADDRESS,
+  UNIV3_ADDRESS,
+} from '@/static/constants/contract';
+import { SuccessToast } from '@/components/successToast';
+import { formatWETH } from '@/utils/format';
 
 export type SupplyModalProps = {
   open: boolean;
@@ -29,7 +40,7 @@ const StyledDialogTitle = styled(DialogTitle)`
   text-align: left;
   padding: 0;
 `;
-const StyledCircularProgress = styled(CircularProgress)`
+const ImageCircularProgress = styled(CircularProgress)`
   color: var(--primary-color) !important;
 `;
 const Image = styled.img`
@@ -68,7 +79,7 @@ export const SupplyModal = ({
   onClose,
   supplyData,
 }: SupplyModalProps) => {
-  const { signer } = useWeb3Context();
+  const { signer, account } = useWeb3Context();
   const [imgObj, setImgObj] = useState({} as ImgObj);
   useEffect(() => {
     const getData = async () => {
@@ -89,31 +100,85 @@ export const SupplyModal = ({
       setImgObj({} as ImgObj);
     };
   }, [signer, supplyData]);
+  const [borrowLimit, setBorrowLimit] = useState('');
+  useEffect(() => {
+    const getBorrowLimit = async () => {
+      if (!signer || !account) {
+        return;
+      }
+      const controller = Controller__factory.connect(
+        CONTROLLER_ADDRESS,
+        signer
+      );
+      const ret = await controller.getAccountLiquidity(account);
+      setBorrowLimit(formatWETH(ret));
+    };
+    getBorrowLimit();
+  }, [account, signer]);
+  const handleClose = () => {
+    toggleLoading(false);
+    onClose && onClose();
+  };
+  const [loading, toggleLoading] = useState(false);
+  const [toastOpen, toggleToastOpen] = useState(false);
   const supplyNFT = async () => {
-    const univ3 = Univ3__factory.connect(UNIV3_ADDRESS, signer);
-    console.log(univ3);
+    try {
+      toggleLoading(true);
+
+      const erc721Reserve = Erc721Reserve__factory.connect(
+        ERC721_RESERVE_ADDRESS,
+        signer
+      );
+      const univ3 = Univ3__factory.connect(UNIV3_ADDRESS, signer);
+
+      const tx = await univ3.approve(
+        ERC721_RESERVE_ADDRESS,
+        supplyData?.tokenId
+      );
+      await tx.wait();
+
+      const supplyTx = await erc721Reserve.supply(supplyData?.tokenId);
+      supplyTx.wait();
+
+      toggleToastOpen(true);
+      toggleLoading(false);
+      handleClose();
+    } catch (e) {
+      console.log(e);
+      toggleLoading(false);
+    }
   };
   return (
-    <Dialog open={open} onClose={onClose}>
-      <StyledDialogTitle>Supply Uniswap</StyledDialogTitle>
-      {imgObj?.image ? (
-        <Image
-          src={imgObj.image}
-          alt={imgObj.name}
-          width="200px"
-          className={'active'}
-        />
-      ) : (
-        <LoadingWrap>
-          <StyledCircularProgress />
-        </LoadingWrap>
-      )}
+    <>
+      <Dialog open={open} onClose={handleClose}>
+        <StyledDialogTitle>Supply Uniswap</StyledDialogTitle>
+        {imgObj?.image ? (
+          <Image
+            src={imgObj.image}
+            alt={imgObj.name}
+            width="200px"
+            className={'active'}
+          />
+        ) : (
+          <LoadingWrap>
+            <ImageCircularProgress />
+          </LoadingWrap>
+        )}
 
-      <StyledDialogContentText>
-        Current Borrow Limit: $20 <span> +$20</span>
-      </StyledDialogContentText>
+        <StyledDialogContentText>
+          Current Borrow Limit: {borrowLimit}WETH{' '}
+          <span style={{ color: 'green' }}> +1WETH</span>
+        </StyledDialogContentText>
 
-      <Button onClick={supplyNFT}>Supply nft</Button>
-    </Dialog>
+        <Button
+          onClick={supplyNFT}
+          disabled={loading || imgObj?.image === undefined}
+        >
+          Supply nft
+          {loading && <StyledCircularProgress size={20} />}
+        </Button>
+      </Dialog>
+      <SuccessToast open={toastOpen} onClose={() => toggleToastOpen(false)} />
+    </>
   );
 };
