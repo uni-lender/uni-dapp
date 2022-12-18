@@ -7,13 +7,10 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Button, Typography } from '@mui/material';
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { SupplyModal } from '../SupplyModal';
 
-import { UNIV3_ADDRESS } from '@/static/constants/contract';
-import { Erc20__factory, Univ3__factory } from '@/contracts';
-import { useWeb3Context } from '@/contexts/web3Context';
 import { TokenIcon, TokenName } from '@/components/tokenIcon';
 import { useUniContext } from '@/contexts/uniContext';
 
@@ -43,51 +40,14 @@ export type UniswapRow = {
 };
 
 const UniswapTable = () => {
-  const { signer, account } = useWeb3Context();
-  const { updateData } = useUniContext();
-  const [list, setList] = useState([] as Array<UniswapRow>);
+  const { updateData, uniList } = useUniContext();
   const [supplyOpen, toggleSupplyOpen] = useState(false);
   const [supplyData, setSupplyData] = useState({} as UniswapRow);
 
-  const getTableData = useCallback(async () => {
-    if (!account || !signer) {
-      return;
-    }
-    const univ3 = Univ3__factory.connect(UNIV3_ADDRESS, signer);
-    const balance = await univ3.balanceOf(account);
-    const ret = [];
-    for (let i = 0; i < Math.min(20, balance.toNumber()); i++) {
-      const tokenId = await univ3.tokenOfOwnerByIndex(account, i);
-      const position = await univ3.positions(tokenId);
-      const token0 = await Erc20__factory.connect(
-        position.token0,
-        signer
-      ).symbol();
-      const token1 = await Erc20__factory.connect(
-        position.token1,
-        signer
-      ).symbol();
-      ret.push({
-        asset: `LP-${token0} / ${token1}`,
-        token0Symbol: token0,
-        token1Symbol: token1,
-        fee: position.fee,
-        tickLower: position.tickLower,
-        tickUpper: position.tickUpper,
-        value: 1,
-        tokenId: tokenId.toString(),
-      } as UniswapRow);
-    }
-    setList(ret);
-  }, [account, signer]);
   const openSupply = (row: UniswapRow) => {
     setSupplyData(row);
     toggleSupplyOpen(true);
   };
-
-  useEffect(() => {
-    getTableData();
-  }, [getTableData]);
 
   return (
     <TableContainer component={Paper} sx={{ mb: 4 }}>
@@ -105,7 +65,7 @@ const UniswapTable = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {list.map((row, index) => (
+          {uniList.map((row, index) => (
             <StyledTableRow key={index}>
               <IconWrap component="th" scope="row">
                 <TokenIcon name={row.token0Symbol} />

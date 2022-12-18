@@ -46,6 +46,7 @@ export type UniContextValue = {
   supplyBalance: string;
   erc20SupplyAPY: string;
   erc20BorrowAPY: string;
+  uniList: UniswapRow[];
 };
 const UniContext = createContext({} as UniContextValue);
 
@@ -60,6 +61,7 @@ export const UniContextProvider = ({ children }: { children: ReactNode }) => {
   const [supplyBalance, setSupplyBalance] = useState('');
   const [erc20SupplyAPY, setErc20SupplyAPY] = useState('');
   const [erc20BorrowAPY, setErc20BorrowAPY] = useState('');
+  const [uniList, setUniList] = useState([] as UniswapRow[]);
 
   const getBorrowValue = useCallback(async () => {
     if (!signer || !account) {
@@ -176,6 +178,38 @@ export const UniContextProvider = ({ children }: { children: ReactNode }) => {
       (Number(supplyAPY.toString()) / 1000000000000000000).toString()
     );
   }, [account, signer]);
+  const getUniList = useCallback(async () => {
+    if (!account || !signer) {
+      return;
+    }
+    const univ3 = Univ3__factory.connect(UNIV3_ADDRESS, signer);
+    const balance = await univ3.balanceOf(account);
+    const ret = [];
+    for (let i = 0; i < Math.min(20, balance.toNumber()); i++) {
+      const tokenId = await univ3.tokenOfOwnerByIndex(account, i);
+      const position = await univ3.positions(tokenId);
+      const token0 = await Erc20__factory.connect(
+        position.token0,
+        signer
+      ).symbol();
+      const token1 = await Erc20__factory.connect(
+        position.token1,
+        signer
+      ).symbol();
+      ret.push({
+        asset: `LP-${token0} / ${token1}`,
+        token0Symbol: token0,
+        token1Symbol: token1,
+        fee: position.fee,
+        tickLower: position.tickLower,
+        tickUpper: position.tickUpper,
+        value: 1,
+        tokenId: tokenId.toString(),
+      } as UniswapRow);
+    }
+    setUniList(ret);
+  }, [account, signer]);
+
   const updateData = useCallback(() => {
     getBorrowLimit();
     getBorrowValue();
@@ -183,6 +217,7 @@ export const UniContextProvider = ({ children }: { children: ReactNode }) => {
     getLiquidity();
     getSupplied();
     getERC20APY();
+    getUniList();
   }, [
     getBorrowLimit,
     getBorrowValue,
@@ -190,6 +225,7 @@ export const UniContextProvider = ({ children }: { children: ReactNode }) => {
     getLiquidity,
     getSupplied,
     getERC20APY,
+    getUniList,
   ]);
 
   useEffect(() => {
@@ -212,6 +248,7 @@ export const UniContextProvider = ({ children }: { children: ReactNode }) => {
       supplyBalance,
       erc20BorrowAPY,
       erc20SupplyAPY,
+      uniList,
     };
   }, [
     borrowLimit,
@@ -228,6 +265,7 @@ export const UniContextProvider = ({ children }: { children: ReactNode }) => {
     supplyBalance,
     erc20BorrowAPY,
     erc20SupplyAPY,
+    uniList,
   ]);
   return <UniContext.Provider value={value}>{children}</UniContext.Provider>;
 };

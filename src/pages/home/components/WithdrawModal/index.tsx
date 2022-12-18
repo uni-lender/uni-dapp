@@ -9,15 +9,22 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { UniswapRow } from '../UniswapTable';
+import { StyledCircularProgress } from '../SupplyERC20Modal';
 
 import { useWeb3Context } from '@/contexts/web3Context';
-import { Univ3__factory } from '@/contracts';
-import { UNIV3_ADDRESS } from '@/static/constants/contract';
+import { Erc721Reserve__factory, Univ3__factory } from '@/contracts';
+import {
+  ERC721_RESERVE_ADDRESS,
+  UNIV3_ADDRESS,
+} from '@/static/constants/contract';
+import { SuccessToast } from '@/components/successToast';
+import { useUniContext } from '@/contexts/uniContext';
 
 export type WithdrawModalProps = {
   open: boolean;
   onClose?: () => void;
   withdrawData: UniswapRow;
+  successCallback?: () => void;
 };
 type ImgObj = {
   image: string;
@@ -29,7 +36,7 @@ const StyledDialogTitle = styled(DialogTitle)`
   text-align: left;
   padding: 0;
 `;
-const StyledCircularProgress = styled(CircularProgress)`
+const ImageCircularProgress = styled(CircularProgress)`
   color: var(--primary-color) !important;
 `;
 const Image = styled.img`
@@ -67,8 +74,10 @@ export const WithdrawModal = ({
   open,
   onClose,
   withdrawData,
+  successCallback,
 }: WithdrawModalProps) => {
   const { signer } = useWeb3Context();
+  const { borrowLimit } = useUniContext();
   const [imgObj, setImgObj] = useState({} as ImgObj);
   useEffect(() => {
     const getData = async () => {
@@ -87,27 +96,60 @@ export const WithdrawModal = ({
       setImgObj({} as ImgObj);
     };
   }, [signer, withdrawData]);
+  const handleClose = () => {
+    toggleLoading(false);
+    onClose && onClose();
+  };
+  const [loading, toggleLoading] = useState(false);
+  const [toastOpen, toggleToastOpen] = useState(false);
+  const withdrawNFT = async () => {
+    try {
+      toggleLoading(true);
+      const erc721Reserve = Erc721Reserve__factory.connect(
+        ERC721_RESERVE_ADDRESS,
+        signer
+      );
+
+      const withdrawTx = await erc721Reserve.withdraw(withdrawData?.tokenId);
+      withdrawTx.wait();
+
+      successCallback && successCallback();
+      toggleToastOpen(true);
+      toggleLoading(false);
+      handleClose();
+    } catch (e) {
+      console.log(e);
+      toggleLoading(false);
+    }
+  };
   return (
-    <Dialog open={open} onClose={onClose}>
-      <StyledDialogTitle>Withdraw Uniswap</StyledDialogTitle>
-      {imgObj?.image ? (
-        <Image
-          src={imgObj.image}
-          alt={imgObj.name}
-          width="200px"
-          className={'active'}
-        />
-      ) : (
-        <LoadingWrap>
-          <StyledCircularProgress />
-        </LoadingWrap>
-      )}
+    <>
+      <Dialog open={open} onClose={onClose}>
+        <StyledDialogTitle>Withdraw Uniswap</StyledDialogTitle>
+        {imgObj?.image ? (
+          <Image
+            src={imgObj.image}
+            alt={imgObj.name}
+            width="200px"
+            className={'active'}
+          />
+        ) : (
+          <LoadingWrap>
+            <ImageCircularProgress />
+          </LoadingWrap>
+        )}
 
-      <StyledDialogContentText>
-        Current Borrow Limit: $20 <span> -$20</span>
-      </StyledDialogContentText>
+        <StyledDialogContentText>
+          Borrow Limit: {borrowLimit}WETH{' '}
+          <span style={{ color: 'green' }}> -1WETH</span>
+        </StyledDialogContentText>
 
-      <Button>Withdraw nft</Button>
-    </Dialog>
+        <Button disabled={loading} onClick={withdrawNFT}>
+          Withdraw nft
+          {loading && <StyledCircularProgress size={20} />}
+        </Button>
+      </Dialog>
+      <SuccessToast open={toastOpen} onClose={() => toggleToastOpen(false)} />
+    </>
   );
 };

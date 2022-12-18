@@ -69,7 +69,7 @@ const CollapsibleRow = ({
   const [open, setOpen] = useState(false);
   return (
     <>
-      <TableRow>
+      <TableRow key={'collapse-row-1'}>
         <TableCell>
           <IconButton
             aria-label="expand row"
@@ -88,7 +88,7 @@ const CollapsibleRow = ({
         <TableCell align="right">{row.supplyAPY}</TableCell>
         <TableCell></TableCell>
       </TableRow>
-      <TableRow>
+      <TableRow key={'collapse-row-2'}>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Table size="small" aria-label="purchases">
@@ -104,7 +104,7 @@ const CollapsibleRow = ({
               </TableHead>
               <TableBody>
                 {subRows.map((subRow, index) => (
-                  <TableRow key={index}>
+                  <TableRow key={index + subRow.asset}>
                     <SubIconWrap component="th" scope="row">
                       <TokenIcon name={subRow.token0Symbol} />
                       <TokenIcon name={subRow.token1Symbol} />
@@ -208,6 +208,11 @@ const MySupplyTable = () => {
         onClose={() => {
           toggleWithdrawOpen(false);
         }}
+        successCallback={() =>
+          setTimeout(() => {
+            updateData();
+          }, 300)
+        }
       />
       <WithdrawERC20Modal
         open={erc20WithdrawOpen}
