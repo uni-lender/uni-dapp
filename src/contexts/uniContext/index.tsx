@@ -11,14 +11,25 @@ import { ethers } from 'ethers';
 
 import { useWeb3Context } from '../web3Context';
 
-import { Erc20__factory } from '@/contracts';
-import { WETH_ADDRESS } from '@/static/constants/contract';
+import {
+  Erc20__factory,
+  Erc721Reserve__factory,
+  Univ3__factory,
+} from '@/contracts';
+import {
+  ERC721_RESERVE_ADDRESS,
+  UNIV3_ADDRESS,
+  WETH_ADDRESS,
+  WETH_NAME,
+} from '@/static/constants/contract';
 import { Controller__factory, Erc20Reverse__factory } from '@/contracts';
 import {
   CONTROLLER_ADDRESS,
   ERC20_RESERVE_ADDRESS,
 } from '@/static/constants/contract';
 import { formatWETH } from '@/utils/format';
+import { SupplyRow } from '@/pages/home/components/MySupplyTable';
+import { UniswapRow } from '@/pages/home/components/UniswapTable';
 
 export type UniContextValue = {
   borrowValue: string;
@@ -30,6 +41,9 @@ export type UniContextValue = {
   liquidity: string;
   getLiquidity: () => void;
   updateData: () => void;
+  supplyRows: SupplyRow[];
+  subSupplyRows: UniswapRow[];
+  supplyBalance: string;
 };
 const UniContext = createContext({} as UniContextValue);
 
@@ -39,6 +53,9 @@ export const UniContextProvider = ({ children }: { children: ReactNode }) => {
   const [borrowLimit, setBorrowLimit] = useState('');
   const [walletBalance, setWalletBalance] = useState('');
   const [liquidity, setLiquidity] = useState('');
+  const [supplyRows, setSupplyRows] = useState([] as SupplyRow[]);
+  const [subSupplyRows, setSubSupplyRows] = useState([] as UniswapRow[]);
+  const [supplyBalance, setSupplyBalance] = useState('');
 
   const getBorrowValue = useCallback(async () => {
     if (!signer || !account) {
@@ -75,12 +92,82 @@ export const UniContextProvider = ({ children }: { children: ReactNode }) => {
     const balance = await erc20.balanceOf(ERC20_RESERVE_ADDRESS);
     setLiquidity(ethers.utils.formatEther(balance));
   }, [signer]);
+  const getSupplied = useCallback(async () => {
+    if (!signer || !account) {
+      return;
+    }
+    const erc20Reserve = Erc20Reverse__factory.connect(
+      ERC20_RESERVE_ADDRESS,
+      signer
+    );
+    const balance = await erc20Reserve.supplyBalanceOf(account);
+    const supplied = formatWETH(balance);
+    setSupplyBalance(supplied);
+    const ret = [] as SupplyRow[];
+    if (Number(supplied) !== 0) {
+      ret.push({
+        name: WETH_NAME,
+        supplied,
+        supplyAPY: '1',
+      });
+    }
+    const erc721Reserve = Erc721Reserve__factory.connect(
+      ERC721_RESERVE_ADDRESS,
+      signer
+    );
+    const erc721Balance = await erc721Reserve.balanceOf(account);
+    const univ3 = Univ3__factory.connect(UNIV3_ADDRESS, signer);
+    const subList = [] as UniswapRow[];
+    for (let i = 0; i < Math.min(20, erc721Balance.toNumber()); i++) {
+      const tokenId = await univ3.tokenOfOwnerByIndex(
+        ERC721_RESERVE_ADDRESS,
+        i
+      );
+      const position = await univ3.positions(tokenId);
+      const token0 = await Erc20__factory.connect(
+        position.token0,
+        signer
+      ).symbol();
+      const token1 = await Erc20__factory.connect(
+        position.token1,
+        signer
+      ).symbol();
+
+      subList.push({
+        asset: `LP-${token0} / ${token1}`,
+        token0Symbol: token0,
+        token1Symbol: token1,
+        fee: position.fee,
+        tickLower: position.tickLower,
+        tickUpper: position.tickUpper,
+        value: 1,
+        tokenId: tokenId.toString(),
+      } as UniswapRow);
+    }
+    if (subList.length) {
+      setSubSupplyRows(subList);
+      ret.push({
+        name: 'Uniswap',
+        supplied: `${subList.length}`,
+        supplyAPY: '-',
+      });
+    }
+    setSupplyRows(ret);
+  }, [account, signer]);
+
   const updateData = useCallback(() => {
     getBorrowLimit();
     getBorrowValue();
     getWalletBalance();
     getLiquidity();
-  }, [getBorrowLimit, getBorrowValue, getWalletBalance, getLiquidity]);
+    getSupplied();
+  }, [
+    getBorrowLimit,
+    getBorrowValue,
+    getWalletBalance,
+    getLiquidity,
+    getSupplied,
+  ]);
 
   useEffect(() => {
     updateData();
@@ -97,6 +184,9 @@ export const UniContextProvider = ({ children }: { children: ReactNode }) => {
       liquidity,
       getLiquidity,
       updateData,
+      supplyRows,
+      subSupplyRows,
+      supplyBalance,
     };
   }, [
     borrowLimit,
@@ -108,6 +198,9 @@ export const UniContextProvider = ({ children }: { children: ReactNode }) => {
     getLiquidity,
     liquidity,
     updateData,
+    supplyRows,
+    subSupplyRows,
+    supplyBalance,
   ]);
   return <UniContext.Provider value={value}>{children}</UniContext.Provider>;
 };

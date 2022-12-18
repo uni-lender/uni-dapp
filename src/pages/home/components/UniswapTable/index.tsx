@@ -10,7 +10,6 @@ import { Button, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 
 import { SupplyModal } from '../SupplyModal';
-import { WithdrawModal } from '../WithdrawModal';
 
 import {
   ERC721_RESERVE_ADDRESS,
@@ -54,8 +53,6 @@ const UniswapTable = () => {
   const [list, setList] = useState([] as Array<UniswapRow>);
   const [supplyOpen, toggleSupplyOpen] = useState(false);
   const [supplyData, setSupplyData] = useState({} as UniswapRow);
-  const [withdrawOpen, toggleWithdrawOpen] = useState(false);
-  const [withdrawData, setWithdrawData] = useState({} as UniswapRow);
 
   const getTableData = useCallback(async () => {
     if (!account || !signer) {
@@ -92,10 +89,7 @@ const UniswapTable = () => {
     setSupplyData(row);
     toggleSupplyOpen(true);
   };
-  const openWithdraw = (row: UniswapRow) => {
-    setWithdrawData(row);
-    toggleWithdrawOpen(true);
-  };
+
   useEffect(() => {
     getTableData();
   }, [getTableData]);
@@ -154,7 +148,6 @@ const UniswapTable = () => {
             <TableCell align="right">TickUpper</TableCell>
             <TableCell align="right">Fee</TableCell>
             <TableCell align="right">Value</TableCell>
-            <TableCell align="right">Suplied</TableCell>
             <TableCell align="right"></TableCell>
           </TableRow>
         </TableHead>
@@ -170,7 +163,6 @@ const UniswapTable = () => {
               <TableCell align="right">{row.tickUpper}</TableCell>
               <TableCell align="right">{row.fee}</TableCell>
               <TableCell align="right">{row.value}</TableCell>
-              <TableCell align="right">true</TableCell>
               <TableCell align="right">
                 <Button
                   variant="outlined"
@@ -179,13 +171,6 @@ const UniswapTable = () => {
                   onClick={() => openSupply(row)}
                 >
                   Supply
-                </Button>
-                <Button
-                  variant="outlined"
-                  size="small"
-                  onClick={() => openWithdraw(row)}
-                >
-                  Withdraw
                 </Button>
               </TableCell>
             </StyledTableRow>
@@ -197,13 +182,6 @@ const UniswapTable = () => {
         supplyData={supplyData}
         onClose={() => {
           toggleSupplyOpen(false);
-        }}
-      />
-      <WithdrawModal
-        open={withdrawOpen}
-        withdrawData={withdrawData}
-        onClose={() => {
-          toggleWithdrawOpen(false);
         }}
       />
     </TableContainer>

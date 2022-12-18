@@ -6,3 +6,4 @@ export const ERC20_RESERVE_ADDRESS =
   '0x04fc820176617A99AE134904935Bc854b2e51628';
 export const CONTROLLER_ADDRESS = '0x2c4b93b614DdbfAF0807e8F4Ca982e9f9c2e2Aa4';
 export const RPC_HOST = 'http://localhost:8545';
+export const WETH_NAME = 'WETH';

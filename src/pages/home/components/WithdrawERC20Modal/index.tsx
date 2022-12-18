@@ -7,15 +7,26 @@ import {
 } from '@mui/material';
 import { useState, useMemo } from 'react';
 import styled from 'styled-components';
+import { ethers } from 'ethers';
 
-import { BorrowRow } from '../MyBorrowTable';
+import { SupplyRow } from '../MySupplyTable';
+import { StyledCircularProgress } from '../SupplyERC20Modal';
 
-import { TokenIcon } from '@/components/tokenIcon';
+import { TokenIcon, TokenName } from '@/components/tokenIcon';
 import { useUniContext } from '@/contexts/uniContext';
+import { SuccessToast } from '@/components/successToast';
+import { Erc20Reverse__factory, Erc20__factory } from '@/contracts';
+import {
+  ERC20_RESERVE_ADDRESS,
+  WETH_ADDRESS,
+} from '@/static/constants/contract';
+import { useWeb3Context } from '@/contexts/web3Context';
+
 export type WithdrawERC20ModalProps = {
   open: boolean;
   onClose?: () => void;
-  withdrawData: BorrowRow;
+  withdrawData: SupplyRow;
+  successCallback?: () => void;
 };
 const ContentWrap = styled.div`
   background: #eee;
@@ -35,6 +46,7 @@ export const WithdrawERC20Modal = ({
   open,
   onClose,
   withdrawData,
+  successCallback,
 }: WithdrawERC20ModalProps) => {
   const [value, setValue] = useState<string>('');
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,57 +59,99 @@ export const WithdrawERC20Modal = ({
     }
     setValue(e.target.value);
   };
+  const { supplyBalance, borrowLimit } = useUniContext();
+
   const error = useMemo(() => {
-    return value !== '' && (Number(value) === 0 || Number(value) > 10);
-  }, [value]);
-  const { walletBalance } = useUniContext();
+    return (
+      value !== '' &&
+      (Number(value) === 0 || Number(value) > Number(supplyBalance))
+    );
+  }, [supplyBalance, value]);
+  const [loading, toggleLoading] = useState(false);
+  const [toastOpen, toggleToastOpen] = useState(false);
+  const { signer } = useWeb3Context();
+  const handleClose = () => {
+    setValue('');
+    toggleLoading(false);
+    onClose && onClose();
+  };
+  const withdrawERC20 = async () => {
+    try {
+      toggleLoading(true);
+
+      const erc20Reserve = Erc20Reverse__factory.connect(
+        ERC20_RESERVE_ADDRESS,
+        signer
+      );
+      const erc20 = Erc20__factory.connect(WETH_ADDRESS, signer);
+      const amount = ethers.utils.parseUnits(value, 18);
+      const tx = await erc20.approve(ERC20_RESERVE_ADDRESS, amount);
+      await tx.wait();
+
+      const withdrawTx = await erc20Reserve.withdraw(amount);
+      withdrawTx.wait();
+      toggleLoading(false);
+      toggleToastOpen(true);
+      handleClose();
+      successCallback && successCallback();
+    } catch (e) {
+      console.log('error', e);
+      toggleLoading(false);
+    }
+  };
 
   return (
-    <Dialog
-      open={open}
-      onClose={() => {
-        setValue('');
-        onClose && onClose();
-      }}
-    >
-      <DialogTitle>Withdraw {withdrawData?.name}</DialogTitle>
-      <span style={{ textAlign: 'right' }}>
-        Withdraw Limit: {walletBalance}
-        {withdrawData.name}
-      </span>
-      <TextField
-        onChange={handleChange}
-        variant="outlined"
-        error={error}
-        helperText={error ? 'Invalid amount' : ''}
-        InputProps={{
-          startAdornment: (
-            <TokenIcon
-              name={withdrawData?.name}
-              style={{ marginRight: '10px' }}
-            />
-          ),
-        }}
-        value={value}
-        placeholder="0"
-      />
-      <ContentWrap>
-        <DialogContentText>
-          Borrowing: $30{' '}
-          {value !== undefined && value !== '' && (
-            <span
-              style={{
-                color: value && Number(value) > 20 ? 'red' : 'green',
-              }}
-            >
-              +{value}
-            </span>
-          )}
-        </DialogContentText>
-      </ContentWrap>
-      <Button disabled={error || value === ''}>
-        Withdraw {value === undefined ? 0 : value} {withdrawData.name}
-      </Button>
-    </Dialog>
+    <>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Withdraw {withdrawData?.name}</DialogTitle>
+        <span style={{ textAlign: 'right' }}>
+          Withdraw Limit: {supplyBalance}
+          {withdrawData.name}
+        </span>
+        <TextField
+          onChange={handleChange}
+          variant="outlined"
+          error={error}
+          helperText={error ? 'Invalid amount' : ''}
+          InputProps={{
+            startAdornment: (
+              <TokenIcon
+                name={withdrawData?.name as TokenName}
+                style={{ marginRight: '10px' }}
+              />
+            ),
+          }}
+          value={value}
+          placeholder="0"
+        />
+        <ContentWrap>
+          <DialogContentText>
+            Borrow Limit: {borrowLimit}WETH
+            {value !== undefined && value !== '' && (
+              <span
+                style={{
+                  color:
+                    value && Number(value) > Number(supplyBalance)
+                      ? 'red'
+                      : 'green',
+                }}
+              >
+                -{value}
+              </span>
+            )}
+          </DialogContentText>
+        </ContentWrap>
+        <Button
+          disabled={error || value === '' || loading}
+          onClick={withdrawERC20}
+        >
+          Withdraw {value === undefined ? 0 : value} {withdrawData.name}
+          {loading && <StyledCircularProgress size={20} />}
+        </Button>
+      </Dialog>
+      {toastOpen && (
+        <SuccessToast open={toastOpen} onClose={() => toggleToastOpen(false)} />
+      )}
+    </>
   );
 };
