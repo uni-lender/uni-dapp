@@ -44,6 +44,8 @@ export type UniContextValue = {
   supplyRows: SupplyRow[];
   subSupplyRows: UniswapRow[];
   supplyBalance: string;
+  erc20SupplyAPY: string;
+  erc20BorrowAPY: string;
 };
 const UniContext = createContext({} as UniContextValue);
 
@@ -56,6 +58,8 @@ export const UniContextProvider = ({ children }: { children: ReactNode }) => {
   const [supplyRows, setSupplyRows] = useState([] as SupplyRow[]);
   const [subSupplyRows, setSubSupplyRows] = useState([] as UniswapRow[]);
   const [supplyBalance, setSupplyBalance] = useState('');
+  const [erc20SupplyAPY, setErc20SupplyAPY] = useState('');
+  const [erc20BorrowAPY, setErc20BorrowAPY] = useState('');
 
   const getBorrowValue = useCallback(async () => {
     if (!signer || !account) {
@@ -155,18 +159,37 @@ export const UniContextProvider = ({ children }: { children: ReactNode }) => {
     setSupplyRows(ret);
   }, [account, signer]);
 
+  const getERC20APY = useCallback(async () => {
+    if (!signer || !account) {
+      return;
+    }
+    const erc20Reserve = Erc20Reverse__factory.connect(
+      ERC20_RESERVE_ADDRESS,
+      signer
+    );
+    const borrowAPY = await erc20Reserve.borrowAPY();
+    const supplyAPY = await erc20Reserve.supplyAPY();
+    setErc20BorrowAPY(
+      (Number(borrowAPY.toString()) / 1000000000000000000).toString()
+    );
+    setErc20SupplyAPY(
+      (Number(supplyAPY.toString()) / 1000000000000000000).toString()
+    );
+  }, [account, signer]);
   const updateData = useCallback(() => {
     getBorrowLimit();
     getBorrowValue();
     getWalletBalance();
     getLiquidity();
     getSupplied();
+    getERC20APY();
   }, [
     getBorrowLimit,
     getBorrowValue,
     getWalletBalance,
     getLiquidity,
     getSupplied,
+    getERC20APY,
   ]);
 
   useEffect(() => {
@@ -187,6 +210,8 @@ export const UniContextProvider = ({ children }: { children: ReactNode }) => {
       supplyRows,
       subSupplyRows,
       supplyBalance,
+      erc20BorrowAPY,
+      erc20SupplyAPY,
     };
   }, [
     borrowLimit,
@@ -201,6 +226,8 @@ export const UniContextProvider = ({ children }: { children: ReactNode }) => {
     supplyRows,
     subSupplyRows,
     supplyBalance,
+    erc20BorrowAPY,
+    erc20SupplyAPY,
   ]);
   return <UniContext.Provider value={value}>{children}</UniContext.Provider>;
 };

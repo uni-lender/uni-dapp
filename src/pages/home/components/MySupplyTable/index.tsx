@@ -23,7 +23,9 @@ const SubIconWrap = styled(TableCell)`
   display: flex;
   align-items: center;
   img {
-    margin-right: 10px;
+    &:last-child {
+      transform: translateX(-10px);
+    }
   }
 `;
 
@@ -145,6 +147,9 @@ const MySupplyTable = () => {
     setData(row);
     toggleOpen(true);
   };
+  if (!supplyRows.length) {
+    return null;
+  }
   return (
     <TableContainer component={Paper} sx={{ mb: 4 }}>
       <Typography variant="h6" component="div" sx={{ m: 3 }}>
