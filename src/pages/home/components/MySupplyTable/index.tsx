@@ -134,7 +134,8 @@ const CollapsibleRow = ({
   );
 };
 const MySupplyTable = () => {
-  const { supplyRows, subSupplyRows, updateData } = useUniContext();
+  const { supplyRows, subSupplyRows, updateData, erc20SupplyAPY } =
+    useUniContext();
   const [withdrawOpen, toggleWithdrawOpen] = useState(false);
   const [withdrawData, setWithdrawData] = useState({} as UniswapRow);
   const openWithdraw = (row: UniswapRow) => {
@@ -176,7 +177,7 @@ const MySupplyTable = () => {
                     {row.name}
                   </IconWrap>
                   <TableCell align="right">{row.supplied}</TableCell>
-                  <TableCell align="right">{row.supplyAPY}</TableCell>
+                  <TableCell align="right">{erc20SupplyAPY}</TableCell>
                   <TableCell align="right">
                     {row.name === WETH_NAME && (
                       <Button

@@ -11,15 +11,8 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { SupplyModal } from '../SupplyModal';
 
-import {
-  ERC721_RESERVE_ADDRESS,
-  UNIV3_ADDRESS,
-} from '@/static/constants/contract';
-import {
-  Erc20__factory,
-  Erc721Reserve__factory,
-  Univ3__factory,
-} from '@/contracts';
+import { UNIV3_ADDRESS } from '@/static/constants/contract';
+import { Erc20__factory, Univ3__factory } from '@/contracts';
 import { useWeb3Context } from '@/contexts/web3Context';
 import { TokenIcon, TokenName } from '@/components/tokenIcon';
 
@@ -94,47 +87,6 @@ const UniswapTable = () => {
     getTableData();
   }, [getTableData]);
 
-  useEffect(() => {
-    const getSupplied = async () => {
-      if (!signer || !account) {
-        return;
-      }
-      const erc721Reserve = Erc721Reserve__factory.connect(
-        ERC721_RESERVE_ADDRESS,
-        signer
-      );
-      const balance = await erc721Reserve.balanceOf(account);
-      const ret = [];
-      const univ3 = Univ3__factory.connect(UNIV3_ADDRESS, signer);
-      for (let i = 0; i < Math.min(20, balance.toNumber()); i++) {
-        const tokenId = await univ3.tokenOfOwnerByIndex(
-          ERC721_RESERVE_ADDRESS,
-          i
-        );
-        const position = await univ3.positions(tokenId);
-        const token0 = await Erc20__factory.connect(
-          position.token0,
-          signer
-        ).symbol();
-        const token1 = await Erc20__factory.connect(
-          position.token1,
-          signer
-        ).symbol();
-        ret.push({
-          asset: `LP-${token0} / ${token1}`,
-          token0Symbol: token0,
-          token1Symbol: token1,
-          fee: position.fee,
-          tickLower: position.tickLower,
-          tickUpper: position.tickUpper,
-          value: 1,
-          tokenId: tokenId.toString(),
-        } as UniswapRow);
-      }
-      console.log('ret', ret);
-    };
-    getSupplied();
-  }, [account, signer]);
   return (
     <TableContainer component={Paper} sx={{ mb: 4 }}>
       <Typography variant="h6" component="div" sx={{ m: 3 }}>
