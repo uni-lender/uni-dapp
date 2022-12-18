@@ -6,27 +6,21 @@ import {
   Button,
   CircularProgress,
 } from '@mui/material';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
 
 import { BorrowRow } from '../MyBorrowTable';
 
 import { TokenIcon } from '@/components/tokenIcon';
-import { useWalletWETH } from '@/hooks/useWalletWETH';
+import { Erc20Reverse__factory, Erc20__factory } from '@/contracts';
 import {
-  Controller__factory,
-  Erc20Reverse__factory,
-  Erc20__factory,
-} from '@/contracts';
-import {
-  CONTROLLER_ADDRESS,
   ERC20_RESERVE_ADDRESS,
   WETH_ADDRESS,
 } from '@/static/constants/contract';
 import { useWeb3Context } from '@/contexts/web3Context';
-import { formatWETH } from '@/utils/format';
 import { SuccessToast } from '@/components/successToast';
+import { useUniContext } from '@/contexts/uniContext';
 export type SupplyERC20ModalProps = {
   open: boolean;
   onClose?: () => void;
@@ -68,10 +62,7 @@ export const SupplyERC20Modal = ({
     }
     setValue(e.target.value);
   };
-
-  const { getWalletWETH } = useWalletWETH();
-  const [walletBalance, setWalletBalance] = useState('');
-  const [borrowLimit, setBorrowLimit] = useState('');
+  const { walletBalance, borrowLimit } = useUniContext();
 
   const error = useMemo(() => {
     return (
@@ -80,29 +71,8 @@ export const SupplyERC20Modal = ({
     );
   }, [value, walletBalance]);
 
-  const { signer, account } = useWeb3Context();
+  const { signer } = useWeb3Context();
 
-  useEffect(() => {
-    const getBalance = async () => {
-      const ret = await getWalletWETH();
-      setWalletBalance(ret ?? '');
-    };
-    getBalance();
-  }, [getWalletWETH]);
-  useEffect(() => {
-    const getBorrowLimit = async () => {
-      if (!signer || !account) {
-        return;
-      }
-      const controller = Controller__factory.connect(
-        CONTROLLER_ADDRESS,
-        signer
-      );
-      const ret = await controller.getAccountLiquidity(account);
-      setBorrowLimit(formatWETH(ret));
-    };
-    getBorrowLimit();
-  }, [account, signer]);
   const handleClose = () => {
     setValue('');
     toggleLoading(false);

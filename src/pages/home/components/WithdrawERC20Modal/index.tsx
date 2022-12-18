@@ -5,13 +5,13 @@ import {
   TextField,
   Button,
 } from '@mui/material';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { BorrowRow } from '../MyBorrowTable';
 
 import { TokenIcon } from '@/components/tokenIcon';
-import { useWalletWETH } from '@/hooks/useWalletWETH';
+import { useUniContext } from '@/contexts/uniContext';
 export type WithdrawERC20ModalProps = {
   open: boolean;
   onClose?: () => void;
@@ -50,15 +50,8 @@ export const WithdrawERC20Modal = ({
   const error = useMemo(() => {
     return value !== '' && (Number(value) === 0 || Number(value) > 10);
   }, [value]);
-  const { getWalletWETH } = useWalletWETH();
-  const [walletBalance, setWalletBalance] = useState('');
-  useEffect(() => {
-    const getBalance = async () => {
-      const ret = await getWalletWETH();
-      setWalletBalance(ret ?? '');
-    };
-    getBalance();
-  }, [getWalletWETH]);
+  const { walletBalance } = useUniContext();
+
   return (
     <Dialog
       open={open}

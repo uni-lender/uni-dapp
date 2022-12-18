@@ -5,7 +5,7 @@ import {
   TextField,
   Button,
 } from '@mui/material';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
 
@@ -16,13 +16,11 @@ import { TokenIcon } from '@/components/tokenIcon';
 import { useWeb3Context } from '@/contexts/web3Context';
 import { Erc20Reverse__factory, Erc20__factory } from '@/contracts';
 import {
-  CONTROLLER_ADDRESS,
   ERC20_RESERVE_ADDRESS,
   WETH_ADDRESS,
 } from '@/static/constants/contract';
 import { SuccessToast } from '@/components/successToast';
-import { formatWETH } from '@/utils/format';
-import { Controller__factory } from '@/contracts/factories/Controller__factory';
+import { useUniContext } from '@/contexts/uniContext';
 export type BorrowModalProps = {
   open: boolean;
   onClose?: () => void;
@@ -61,37 +59,8 @@ export const BorrowModal = ({
     setValue(e.target.value);
   };
 
-  const { account, signer } = useWeb3Context();
-  const [borrowValue, setBorrowValue] = useState('');
-  useEffect(() => {
-    const getCurrentBorrow = async () => {
-      if (!signer || !account) {
-        return;
-      }
-      const erc20Reserve = Erc20Reverse__factory.connect(
-        ERC20_RESERVE_ADDRESS,
-        signer
-      );
-      const ret = await erc20Reserve.accountBorrows(account);
-      setBorrowValue(formatWETH(ret));
-    };
-    getCurrentBorrow();
-  }, [account, signer]);
-  const [borrowLimit, setBorrowLimit] = useState('');
-  useEffect(() => {
-    const getBorrowLimit = async () => {
-      if (!signer || !account) {
-        return;
-      }
-      const controller = Controller__factory.connect(
-        CONTROLLER_ADDRESS,
-        signer
-      );
-      const ret = await controller.getAccountLiquidity(account);
-      setBorrowLimit(formatWETH(ret));
-    };
-    getBorrowLimit();
-  }, [account, signer]);
+  const { signer } = useWeb3Context();
+  const { borrowValue, borrowLimit } = useUniContext();
   const error = useMemo(() => {
     return value !== '' && (Number(value) === 0 || Number(value) > 10);
   }, [value]);

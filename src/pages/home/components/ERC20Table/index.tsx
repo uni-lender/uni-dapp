@@ -7,14 +7,14 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Button, Typography } from '@mui/material';
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 
 import { BorrowRow } from '../MyBorrowTable';
 import { BorrowModal } from '../BorrowERC20Modal';
 import { SupplyERC20Modal } from '../SupplyERC20Modal';
 
 import { TokenIcon, TokenName } from '@/components/tokenIcon';
-import { useWalletWETH } from '@/hooks/useWalletWETH';
+import { useUniContext } from '@/contexts/uniContext';
 
 const IconWrap = styled(TableCell)`
   display: flex;
@@ -44,15 +44,8 @@ const createData = (
 const rows = [createData('WETH', 1, 159, 6.0, 243, 4.0)];
 
 const ERC20Table = () => {
-  const { getWalletWETH } = useWalletWETH();
-  const [walletBalance, setWalletBalance] = useState('');
-  const getBalance = useCallback(async () => {
-    const ret = await getWalletWETH();
-    setWalletBalance(ret ?? '');
-  }, [getWalletWETH]);
-  useEffect(() => {
-    getBalance();
-  }, [getBalance]);
+  const { walletBalance, getWalletBalance, getBorrowLimit } = useUniContext();
+
   const [borrowOpen, toggleBorrowOpen] = useState(false);
   const [borrowData, setBorrowData] = useState({} as BorrowRow);
   const openBorrow = (row: BorrowRow) => {
@@ -132,7 +125,12 @@ const ERC20Table = () => {
           toggleSupplyOpen(false);
           setSupplyData({} as BorrowRow);
         }}
-        successCallback={() => setTimeout(() => getBalance(), 300)}
+        successCallback={() =>
+          setTimeout(() => {
+            getWalletBalance();
+            getBorrowLimit();
+          }, 300)
+        }
       />
     </TableContainer>
   );

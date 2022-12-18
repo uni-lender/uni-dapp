@@ -5,7 +5,7 @@ import {
   TextField,
   Button,
 } from '@mui/material';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
 
@@ -19,12 +19,13 @@ import {
   ERC20_RESERVE_ADDRESS,
   WETH_ADDRESS,
 } from '@/static/constants/contract';
-import { formatWETH } from '@/utils/format';
 import { SuccessToast } from '@/components/successToast';
+import { useUniContext } from '@/contexts/uniContext';
 export type RepayModalProps = {
   open: boolean;
   onClose?: () => void;
   repayData: BorrowRow;
+  successCallback?: () => void;
 };
 const ContentWrap = styled.div`
   background: #eee;
@@ -40,7 +41,12 @@ const ContentWrap = styled.div`
     padding: 6px 0;
   }
 `;
-export const RepayModal = ({ open, onClose, repayData }: RepayModalProps) => {
+export const RepayModal = ({
+  open,
+  onClose,
+  repayData,
+  successCallback,
+}: RepayModalProps) => {
   const [value, setValue] = useState<string>('');
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value === '') {
@@ -52,22 +58,8 @@ export const RepayModal = ({ open, onClose, repayData }: RepayModalProps) => {
     }
     setValue(e.target.value);
   };
-  const { account, signer } = useWeb3Context();
-  const [borrowValue, setBorrowValue] = useState('');
-  useEffect(() => {
-    const getCurrentBorrow = async () => {
-      if (!signer || !account) {
-        return;
-      }
-      const erc20Reserve = Erc20Reverse__factory.connect(
-        ERC20_RESERVE_ADDRESS,
-        signer
-      );
-      const ret = await erc20Reserve.accountBorrows(account);
-      setBorrowValue(formatWETH(ret));
-    };
-    getCurrentBorrow();
-  }, [account, signer]);
+  const { signer } = useWeb3Context();
+  const { borrowValue } = useUniContext();
 
   const error = useMemo(() => {
     return (
@@ -80,6 +72,7 @@ export const RepayModal = ({ open, onClose, repayData }: RepayModalProps) => {
     toggleLoading(false);
     onClose && onClose();
   };
+
   const [loading, toggleLoading] = useState(false);
   const [toastOpen, toggleToastOpen] = useState(false);
   const repayERC20 = async () => {
@@ -99,6 +92,7 @@ export const RepayModal = ({ open, onClose, repayData }: RepayModalProps) => {
       repayTx.wait();
 
       toggleToastOpen(true);
+      successCallback && successCallback();
       toggleLoading(false);
       handleClose();
     } catch (e) {
@@ -106,6 +100,7 @@ export const RepayModal = ({ open, onClose, repayData }: RepayModalProps) => {
       toggleLoading(false);
     }
   };
+
   return (
     <>
       <Dialog open={open} onClose={handleClose}>
