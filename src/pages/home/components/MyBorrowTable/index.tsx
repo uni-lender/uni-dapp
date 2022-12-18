@@ -7,17 +7,13 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Button, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { ethers } from 'ethers';
+import { useState } from 'react';
 
 import { BorrowModal } from '../BorrowERC20Modal';
 import { RepayModal } from '../RepayERC20Modal';
 
 import { TokenIcon, TokenName } from '@/components/tokenIcon';
 import { useUniContext } from '@/contexts/uniContext';
-import { Erc20Reverse__factory } from '@/contracts';
-import { ERC20_RESERVE_ADDRESS } from '@/static/constants/contract';
-import { useWeb3Context } from '@/contexts/web3Context';
 
 const IconWrap = styled(TableCell)`
   display: flex;
@@ -57,7 +53,6 @@ const createData = (
 const rows = [createData('WETH', 159, 6.0, 24, 4.0)];
 
 const MyBorrowTable = () => {
-  const { signer, account } = useWeb3Context();
   const { borrowValue, updateData } = useUniContext();
   const [borrowOpen, toggleBorrowOpen] = useState(false);
   const [borrowData, setBorrowData] = useState({} as BorrowRow);
@@ -71,18 +66,9 @@ const MyBorrowTable = () => {
     toggleRelayOpen(true);
     setRepayData(row);
   };
-
-  useEffect(() => {
-    const getBorrowed = async () => {
-      const erc20Reserve = Erc20Reverse__factory.connect(
-        ERC20_RESERVE_ADDRESS,
-        signer
-      );
-      const balance = await erc20Reserve.balanceOf(account);
-      console.log('balance', ethers.utils.formatEther(balance));
-    };
-    getBorrowed();
-  }, [account, signer]);
+  if (Number(borrowValue) === 0) {
+    return null;
+  }
   return (
     <TableContainer component={Paper} sx={{ mb: 4 }}>
       <Typography variant="h6" component="div" sx={{ m: 3 }}>

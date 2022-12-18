@@ -29,30 +29,48 @@ import type {
 
 export interface Erc20ReverseInterface extends utils.Interface {
   functions: {
-    "accountBorrowing(address,uint256)": FunctionFragment;
+    "accountBorrowing(address)": FunctionFragment;
     "accountBorrows(address)": FunctionFragment;
-    "accountCollateral(address,uint256)": FunctionFragment;
+    "accountCollateral(address)": FunctionFragment;
+    "accrueInterest()": FunctionFragment;
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
+    "baseRate()": FunctionFragment;
     "borrow(uint256)": FunctionFragment;
+    "borrowAPY()": FunctionFragment;
+    "borrowAllowed(address,uint256)": FunctionFragment;
+    "borrowBalanceOf(address)": FunctionFragment;
+    "borrowIndex()": FunctionFragment;
     "controller()": FunctionFragment;
     "decimals()": FunctionFragment;
     "decreaseAllowance(address,uint256)": FunctionFragment;
-    "getUnderlying()": FunctionFragment;
+    "exchangeRate()": FunctionFragment;
+    "fullRate()": FunctionFragment;
+    "getUnderlyingPrice()": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
+    "kinkRate()": FunctionFragment;
+    "kinkUtilization()": FunctionFragment;
     "name()": FunctionFragment;
+    "nextExchangeRate()": FunctionFragment;
+    "oracle()": FunctionFragment;
     "owner()": FunctionFragment;
-    "redeem(uint256)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "repay(uint256)": FunctionFragment;
     "supply(uint256)": FunctionFragment;
+    "supplyAPY()": FunctionFragment;
+    "supplyBalanceOf(address)": FunctionFragment;
+    "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
+    "totalBorrow()": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "underlying()": FunctionFragment;
+    "utilization()": FunctionFragment;
+    "withdraw(uint256)": FunctionFragment;
+    "withdrawAllowed(address,uint256)": FunctionFragment;
   };
 
   getFunction(
@@ -60,32 +78,50 @@ export interface Erc20ReverseInterface extends utils.Interface {
       | "accountBorrowing"
       | "accountBorrows"
       | "accountCollateral"
+      | "accrueInterest"
       | "allowance"
       | "approve"
       | "balanceOf"
+      | "baseRate"
       | "borrow"
+      | "borrowAPY"
+      | "borrowAllowed"
+      | "borrowBalanceOf"
+      | "borrowIndex"
       | "controller"
       | "decimals"
       | "decreaseAllowance"
-      | "getUnderlying"
+      | "exchangeRate"
+      | "fullRate"
+      | "getUnderlyingPrice"
       | "increaseAllowance"
+      | "kinkRate"
+      | "kinkUtilization"
       | "name"
+      | "nextExchangeRate"
+      | "oracle"
       | "owner"
-      | "redeem"
       | "renounceOwnership"
       | "repay"
       | "supply"
+      | "supplyAPY"
+      | "supplyBalanceOf"
+      | "supportsInterface"
       | "symbol"
+      | "totalBorrow"
       | "totalSupply"
       | "transfer"
       | "transferFrom"
       | "transferOwnership"
       | "underlying"
+      | "utilization"
+      | "withdraw"
+      | "withdrawAllowed"
   ): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: "accountBorrowing",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "accountBorrows",
@@ -93,7 +129,11 @@ export interface Erc20ReverseInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "accountCollateral",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "accrueInterest",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "allowance",
@@ -107,9 +147,23 @@ export interface Erc20ReverseInterface extends utils.Interface {
     functionFragment: "balanceOf",
     values: [PromiseOrValue<string>]
   ): string;
+  encodeFunctionData(functionFragment: "baseRate", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "borrow",
     values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(functionFragment: "borrowAPY", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "borrowAllowed",
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "borrowBalanceOf",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "borrowIndex",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "controller",
@@ -121,19 +175,30 @@ export interface Erc20ReverseInterface extends utils.Interface {
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
-    functionFragment: "getUnderlying",
+    functionFragment: "exchangeRate",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "fullRate", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "getUnderlyingPrice",
     values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "increaseAllowance",
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
-  encodeFunctionData(functionFragment: "name", values?: undefined): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(functionFragment: "kinkRate", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "redeem",
-    values: [PromiseOrValue<BigNumberish>]
+    functionFragment: "kinkUtilization",
+    values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "name", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "nextExchangeRate",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "oracle", values?: undefined): string;
+  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
@@ -146,7 +211,20 @@ export interface Erc20ReverseInterface extends utils.Interface {
     functionFragment: "supply",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
+  encodeFunctionData(functionFragment: "supplyAPY", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "supplyBalanceOf",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "supportsInterface",
+    values: [PromiseOrValue<BytesLike>]
+  ): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "totalBorrow",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
     values?: undefined
@@ -171,6 +249,18 @@ export interface Erc20ReverseInterface extends utils.Interface {
     functionFragment: "underlying",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "utilization",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdraw",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawAllowed",
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "accountBorrowing",
@@ -184,10 +274,28 @@ export interface Erc20ReverseInterface extends utils.Interface {
     functionFragment: "accountCollateral",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "accrueInterest",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "baseRate", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "borrow", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "borrowAPY", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "borrowAllowed",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "borrowBalanceOf",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "borrowIndex",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "controller", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
   decodeFunctionResult(
@@ -195,23 +303,50 @@ export interface Erc20ReverseInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getUnderlying",
+    functionFragment: "exchangeRate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "fullRate", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getUnderlyingPrice",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "increaseAllowance",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "kinkRate", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "kinkUtilization",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "nextExchangeRate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "oracle", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "redeem", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "repay", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "supply", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "supplyAPY", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "supplyBalanceOf",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "supportsInterface",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "totalBorrow",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
     data: BytesLike
@@ -226,6 +361,15 @@ export interface Erc20ReverseInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "underlying", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "utilization",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawAllowed",
+    data: BytesLike
+  ): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
@@ -303,20 +447,27 @@ export interface Erc20Reverse extends BaseContract {
   functions: {
     accountBorrowing(
       account: PromiseOrValue<string>,
-      underlyingPrice: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
     accountBorrows(
       arg0: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    ): Promise<
+      [BigNumber, BigNumber] & {
+        principal: BigNumber;
+        interestIndex: BigNumber;
+      }
+    >;
 
     accountCollateral(
       account: PromiseOrValue<string>,
-      underlyingPrice: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
+
+    accrueInterest(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
     allowance(
       owner: PromiseOrValue<string>,
@@ -335,10 +486,27 @@ export interface Erc20Reverse extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    baseRate(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     borrow(
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    borrowAPY(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    borrowAllowed(
+      account: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    borrowBalanceOf(
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    borrowIndex(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     controller(overrides?: CallOverrides): Promise<[string]>;
 
@@ -350,7 +518,11 @@ export interface Erc20Reverse extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    getUnderlying(overrides?: CallOverrides): Promise<[string]>;
+    exchangeRate(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    fullRate(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getUnderlyingPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     increaseAllowance(
       spender: PromiseOrValue<string>,
@@ -358,14 +530,17 @@ export interface Erc20Reverse extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    kinkRate(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    kinkUtilization(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     name(overrides?: CallOverrides): Promise<[string]>;
 
-    owner(overrides?: CallOverrides): Promise<[string]>;
+    nextExchangeRate(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    redeem(
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    oracle(overrides?: CallOverrides): Promise<[string]>;
+
+    owner(overrides?: CallOverrides): Promise<[string]>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -381,7 +556,21 @@ export interface Erc20Reverse extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    supplyAPY(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    supplyBalanceOf(
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    supportsInterface(
+      interfaceId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
     symbol(overrides?: CallOverrides): Promise<[string]>;
+
+    totalBorrow(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -404,24 +593,41 @@ export interface Erc20Reverse extends BaseContract {
     ): Promise<ContractTransaction>;
 
     underlying(overrides?: CallOverrides): Promise<[string]>;
+
+    utilization(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    withdraw(
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    withdrawAllowed(
+      account: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
   };
 
   accountBorrowing(
     account: PromiseOrValue<string>,
-    underlyingPrice: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
   accountBorrows(
     arg0: PromiseOrValue<string>,
     overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  ): Promise<
+    [BigNumber, BigNumber] & { principal: BigNumber; interestIndex: BigNumber }
+  >;
 
   accountCollateral(
     account: PromiseOrValue<string>,
-    underlyingPrice: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  accrueInterest(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
   allowance(
     owner: PromiseOrValue<string>,
@@ -440,10 +646,27 @@ export interface Erc20Reverse extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  baseRate(overrides?: CallOverrides): Promise<BigNumber>;
+
   borrow(
     amount: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
+
+  borrowAPY(overrides?: CallOverrides): Promise<BigNumber>;
+
+  borrowAllowed(
+    account: PromiseOrValue<string>,
+    amount: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  borrowBalanceOf(
+    account: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  borrowIndex(overrides?: CallOverrides): Promise<BigNumber>;
 
   controller(overrides?: CallOverrides): Promise<string>;
 
@@ -455,7 +678,11 @@ export interface Erc20Reverse extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  getUnderlying(overrides?: CallOverrides): Promise<string>;
+  exchangeRate(overrides?: CallOverrides): Promise<BigNumber>;
+
+  fullRate(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getUnderlyingPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
   increaseAllowance(
     spender: PromiseOrValue<string>,
@@ -463,14 +690,17 @@ export interface Erc20Reverse extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  kinkRate(overrides?: CallOverrides): Promise<BigNumber>;
+
+  kinkUtilization(overrides?: CallOverrides): Promise<BigNumber>;
+
   name(overrides?: CallOverrides): Promise<string>;
 
-  owner(overrides?: CallOverrides): Promise<string>;
+  nextExchangeRate(overrides?: CallOverrides): Promise<BigNumber>;
 
-  redeem(
-    amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  oracle(overrides?: CallOverrides): Promise<string>;
+
+  owner(overrides?: CallOverrides): Promise<string>;
 
   renounceOwnership(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -486,7 +716,21 @@ export interface Erc20Reverse extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  supplyAPY(overrides?: CallOverrides): Promise<BigNumber>;
+
+  supplyBalanceOf(
+    account: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  supportsInterface(
+    interfaceId: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   symbol(overrides?: CallOverrides): Promise<string>;
+
+  totalBorrow(overrides?: CallOverrides): Promise<BigNumber>;
 
   totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -510,23 +754,41 @@ export interface Erc20Reverse extends BaseContract {
 
   underlying(overrides?: CallOverrides): Promise<string>;
 
+  utilization(overrides?: CallOverrides): Promise<BigNumber>;
+
+  withdraw(
+    amount: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  withdrawAllowed(
+    account: PromiseOrValue<string>,
+    amount: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
     accountBorrowing(
       account: PromiseOrValue<string>,
-      underlyingPrice: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     accountBorrows(
       arg0: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<
+      [BigNumber, BigNumber] & {
+        principal: BigNumber;
+        interestIndex: BigNumber;
+      }
+    >;
 
     accountCollateral(
       account: PromiseOrValue<string>,
-      underlyingPrice: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    accrueInterest(overrides?: CallOverrides): Promise<BigNumber>;
 
     allowance(
       owner: PromiseOrValue<string>,
@@ -545,10 +807,27 @@ export interface Erc20Reverse extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    baseRate(overrides?: CallOverrides): Promise<BigNumber>;
+
     borrow(
       amount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    borrowAPY(overrides?: CallOverrides): Promise<BigNumber>;
+
+    borrowAllowed(
+      account: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    borrowBalanceOf(
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    borrowIndex(overrides?: CallOverrides): Promise<BigNumber>;
 
     controller(overrides?: CallOverrides): Promise<string>;
 
@@ -560,7 +839,11 @@ export interface Erc20Reverse extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    getUnderlying(overrides?: CallOverrides): Promise<string>;
+    exchangeRate(overrides?: CallOverrides): Promise<BigNumber>;
+
+    fullRate(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getUnderlyingPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
     increaseAllowance(
       spender: PromiseOrValue<string>,
@@ -568,14 +851,17 @@ export interface Erc20Reverse extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    kinkRate(overrides?: CallOverrides): Promise<BigNumber>;
+
+    kinkUtilization(overrides?: CallOverrides): Promise<BigNumber>;
+
     name(overrides?: CallOverrides): Promise<string>;
 
-    owner(overrides?: CallOverrides): Promise<string>;
+    nextExchangeRate(overrides?: CallOverrides): Promise<BigNumber>;
 
-    redeem(
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    oracle(overrides?: CallOverrides): Promise<string>;
+
+    owner(overrides?: CallOverrides): Promise<string>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
@@ -589,7 +875,21 @@ export interface Erc20Reverse extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    supplyAPY(overrides?: CallOverrides): Promise<BigNumber>;
+
+    supplyBalanceOf(
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    supportsInterface(
+      interfaceId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     symbol(overrides?: CallOverrides): Promise<string>;
+
+    totalBorrow(overrides?: CallOverrides): Promise<BigNumber>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -612,6 +912,19 @@ export interface Erc20Reverse extends BaseContract {
     ): Promise<void>;
 
     underlying(overrides?: CallOverrides): Promise<string>;
+
+    utilization(overrides?: CallOverrides): Promise<BigNumber>;
+
+    withdraw(
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    withdrawAllowed(
+      account: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {
@@ -650,7 +963,6 @@ export interface Erc20Reverse extends BaseContract {
   estimateGas: {
     accountBorrowing(
       account: PromiseOrValue<string>,
-      underlyingPrice: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -661,8 +973,11 @@ export interface Erc20Reverse extends BaseContract {
 
     accountCollateral(
       account: PromiseOrValue<string>,
-      underlyingPrice: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    accrueInterest(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     allowance(
@@ -682,10 +997,27 @@ export interface Erc20Reverse extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    baseRate(overrides?: CallOverrides): Promise<BigNumber>;
+
     borrow(
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
+
+    borrowAPY(overrides?: CallOverrides): Promise<BigNumber>;
+
+    borrowAllowed(
+      account: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    borrowBalanceOf(
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    borrowIndex(overrides?: CallOverrides): Promise<BigNumber>;
 
     controller(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -697,7 +1029,11 @@ export interface Erc20Reverse extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    getUnderlying(overrides?: CallOverrides): Promise<BigNumber>;
+    exchangeRate(overrides?: CallOverrides): Promise<BigNumber>;
+
+    fullRate(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getUnderlyingPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
     increaseAllowance(
       spender: PromiseOrValue<string>,
@@ -705,14 +1041,17 @@ export interface Erc20Reverse extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    kinkRate(overrides?: CallOverrides): Promise<BigNumber>;
+
+    kinkUtilization(overrides?: CallOverrides): Promise<BigNumber>;
+
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
+    nextExchangeRate(overrides?: CallOverrides): Promise<BigNumber>;
 
-    redeem(
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    oracle(overrides?: CallOverrides): Promise<BigNumber>;
+
+    owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -728,7 +1067,21 @@ export interface Erc20Reverse extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    supplyAPY(overrides?: CallOverrides): Promise<BigNumber>;
+
+    supplyBalanceOf(
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    supportsInterface(
+      interfaceId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
+
+    totalBorrow(overrides?: CallOverrides): Promise<BigNumber>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -751,12 +1104,24 @@ export interface Erc20Reverse extends BaseContract {
     ): Promise<BigNumber>;
 
     underlying(overrides?: CallOverrides): Promise<BigNumber>;
+
+    utilization(overrides?: CallOverrides): Promise<BigNumber>;
+
+    withdraw(
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    withdrawAllowed(
+      account: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     accountBorrowing(
       account: PromiseOrValue<string>,
-      underlyingPrice: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -767,8 +1132,11 @@ export interface Erc20Reverse extends BaseContract {
 
     accountCollateral(
       account: PromiseOrValue<string>,
-      underlyingPrice: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    accrueInterest(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     allowance(
@@ -788,10 +1156,27 @@ export interface Erc20Reverse extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    baseRate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     borrow(
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
+
+    borrowAPY(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    borrowAllowed(
+      account: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    borrowBalanceOf(
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    borrowIndex(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     controller(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -803,7 +1188,13 @@ export interface Erc20Reverse extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    getUnderlying(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    exchangeRate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    fullRate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getUnderlyingPrice(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     increaseAllowance(
       spender: PromiseOrValue<string>,
@@ -811,14 +1202,17 @@ export interface Erc20Reverse extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    kinkRate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    kinkUtilization(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    nextExchangeRate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    redeem(
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    oracle(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -834,7 +1228,21 @@ export interface Erc20Reverse extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    supplyAPY(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    supplyBalanceOf(
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    supportsInterface(
+      interfaceId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    totalBorrow(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -857,5 +1265,18 @@ export interface Erc20Reverse extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     underlying(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    utilization(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    withdraw(
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    withdrawAllowed(
+      account: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
   };
 }

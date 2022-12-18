@@ -48,7 +48,7 @@ export const UniContextProvider = ({ children }: { children: ReactNode }) => {
       ERC20_RESERVE_ADDRESS,
       signer
     );
-    const ret = await erc20Reserve.accountBorrows(account);
+    const ret = await erc20Reserve.borrowBalanceOf(account);
     setBorrowValue(formatWETH(ret));
   }, [account, signer]);
   const getBorrowLimit = useCallback(async () => {

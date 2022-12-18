@@ -117,6 +117,11 @@ const ERC20Table = () => {
           toggleBorrowOpen(false);
           setBorrowData({} as BorrowRow);
         }}
+        successCallback={() =>
+          setTimeout(() => {
+            updateData();
+          }, 300)
+        }
       ></BorrowModal>
       <SupplyERC20Modal
         open={supplyOpen}
