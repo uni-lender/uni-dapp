@@ -64,6 +64,7 @@ const ERC20Table = () => {
     toggleSupplyOpen(true);
     setSupplyData(row);
   };
+  const { supplyBalance } = useUniContext();
   return (
     <TableContainer component={Paper}>
       <Typography variant="h6" component="div" sx={{ m: 3 }}>
@@ -89,7 +90,7 @@ const ERC20Table = () => {
                 {row.name}
               </IconWrap>
               <TableCell align="right">{walletBalance}WETH</TableCell>
-              <TableCell align="right">{row.tvl}</TableCell>
+              <TableCell align="right">{supplyBalance}ETH</TableCell>
               <TableCell align="right">{erc20SupplyAPY}</TableCell>
               <TableCell align="right">{erc20BorrowAPY}</TableCell>
               <TableCell align="right">{liquidity}WETH</TableCell>

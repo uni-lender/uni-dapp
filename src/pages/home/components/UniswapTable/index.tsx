@@ -15,6 +15,7 @@ import { UNIV3_ADDRESS } from '@/static/constants/contract';
 import { Erc20__factory, Univ3__factory } from '@/contracts';
 import { useWeb3Context } from '@/contexts/web3Context';
 import { TokenIcon, TokenName } from '@/components/tokenIcon';
+import { useUniContext } from '@/contexts/uniContext';
 
 const IconWrap = styled(TableCell)`
   display: flex;
@@ -43,6 +44,7 @@ export type UniswapRow = {
 
 const UniswapTable = () => {
   const { signer, account } = useWeb3Context();
+  const { updateData } = useUniContext();
   const [list, setList] = useState([] as Array<UniswapRow>);
   const [supplyOpen, toggleSupplyOpen] = useState(false);
   const [supplyData, setSupplyData] = useState({} as UniswapRow);
@@ -99,7 +101,6 @@ const UniswapTable = () => {
             <TableCell align="right">TickLower</TableCell>
             <TableCell align="right">TickUpper</TableCell>
             <TableCell align="right">Fee</TableCell>
-            <TableCell align="right">Value</TableCell>
             <TableCell align="right"></TableCell>
           </TableRow>
         </TableHead>
@@ -114,7 +115,6 @@ const UniswapTable = () => {
               <TableCell align="right">{row.tickLower}</TableCell>
               <TableCell align="right">{row.tickUpper}</TableCell>
               <TableCell align="right">{row.fee}</TableCell>
-              <TableCell align="right">{row.value}</TableCell>
               <TableCell align="right">
                 <Button
                   variant="outlined"
@@ -135,6 +135,11 @@ const UniswapTable = () => {
         onClose={() => {
           toggleSupplyOpen(false);
         }}
+        successCallback={() =>
+          setTimeout(() => {
+            updateData();
+          }, 200)
+        }
       />
     </TableContainer>
   );

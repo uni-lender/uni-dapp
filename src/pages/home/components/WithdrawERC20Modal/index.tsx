@@ -59,14 +59,14 @@ export const WithdrawERC20Modal = ({
     }
     setValue(e.target.value);
   };
-  const { supplyBalance, borrowLimit } = useUniContext();
+  const { borrowLimit } = useUniContext();
 
   const error = useMemo(() => {
     return (
       value !== '' &&
-      (Number(value) === 0 || Number(value) > Number(supplyBalance))
+      (Number(value) === 0 || Number(value) > Number(borrowLimit))
     );
-  }, [supplyBalance, value]);
+  }, [borrowLimit, value]);
   const [loading, toggleLoading] = useState(false);
   const [toastOpen, toggleToastOpen] = useState(false);
   const { signer } = useWeb3Context();
@@ -105,7 +105,7 @@ export const WithdrawERC20Modal = ({
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Withdraw {withdrawData?.name}</DialogTitle>
         <span style={{ textAlign: 'right' }}>
-          Withdraw Limit: {supplyBalance}
+          Withdraw Limit: {borrowLimit}
           {withdrawData.name}
         </span>
         <TextField
@@ -131,7 +131,7 @@ export const WithdrawERC20Modal = ({
               <span
                 style={{
                   color:
-                    value && Number(value) > Number(supplyBalance)
+                    value && Number(value) > Number(borrowLimit)
                       ? 'red'
                       : 'green',
                 }}

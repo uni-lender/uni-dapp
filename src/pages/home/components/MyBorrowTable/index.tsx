@@ -53,7 +53,7 @@ const createData = (
 const rows = [createData('WETH', 159, 6.0, 24, 4.0)];
 
 const MyBorrowTable = () => {
-  const { borrowValue, updateData } = useUniContext();
+  const { borrowValue, updateData, erc20BorrowAPY } = useUniContext();
   const [borrowOpen, toggleBorrowOpen] = useState(false);
   const [borrowData, setBorrowData] = useState({} as BorrowRow);
   const openBorrow = (row: BorrowRow) => {
@@ -91,7 +91,7 @@ const MyBorrowTable = () => {
                 {row.name}
               </IconWrap>
               <TableCell align="right">{borrowValue}</TableCell>
-              <TableCell align="right">{row.borrowAPY}</TableCell>
+              <TableCell align="right">{erc20BorrowAPY}</TableCell>
               <TableCell align="right">
                 <Button
                   variant="outlined"

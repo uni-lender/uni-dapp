@@ -29,6 +29,7 @@ export type SupplyModalProps = {
   open: boolean;
   onClose?: () => void;
   supplyData: UniswapRow;
+  successCallback?: () => void;
 };
 type ImgObj = {
   image: string;
@@ -78,6 +79,7 @@ export const SupplyModal = ({
   open,
   onClose,
   supplyData,
+  successCallback,
 }: SupplyModalProps) => {
   const { signer, account } = useWeb3Context();
   const [imgObj, setImgObj] = useState({} as ImgObj);
@@ -138,6 +140,7 @@ export const SupplyModal = ({
       const supplyTx = await erc721Reserve.supply(supplyData?.tokenId);
       supplyTx.wait();
 
+      successCallback && successCallback();
       toggleToastOpen(true);
       toggleLoading(false);
       handleClose();

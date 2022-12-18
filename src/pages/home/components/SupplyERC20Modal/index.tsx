@@ -62,7 +62,7 @@ export const SupplyERC20Modal = ({
     }
     setValue(e.target.value);
   };
-  const { walletBalance, borrowLimit, erc20SupplyAPY } = useUniContext();
+  const { walletBalance, borrowLimit } = useUniContext();
 
   const error = useMemo(() => {
     return (
@@ -139,9 +139,6 @@ export const SupplyERC20Modal = ({
                 +{value}WETH
               </span>
             )}
-          </DialogContentText>
-          <DialogContentText>
-            Supply APY: <span>{erc20SupplyAPY}</span>
           </DialogContentText>
         </ContentWrap>
         <Button
