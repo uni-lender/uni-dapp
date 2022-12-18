@@ -80,9 +80,7 @@ export const WithdrawModal = ({
       const retObj = JSON.parse(
         atob(data.replace(/^data:\w+\/\w+;base64,/, ''))
       );
-      setTimeout(() => {
-        setImgObj(retObj as ImgObj);
-      }, 2000);
+      setImgObj(retObj as ImgObj);
     };
     getData();
     return () => {

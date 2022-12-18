@@ -7,6 +7,7 @@ import {
   useContext,
   useEffect,
 } from 'react';
+import { ethers } from 'ethers';
 
 import { useWeb3Context } from '../web3Context';
 
@@ -26,6 +27,9 @@ export type UniContextValue = {
   getBorrowLimit: () => void;
   walletBalance: string;
   getWalletBalance: () => void;
+  liquidity: string;
+  getLiquidity: () => void;
+  updateData: () => void;
 };
 const UniContext = createContext({} as UniContextValue);
 
@@ -34,6 +38,7 @@ export const UniContextProvider = ({ children }: { children: ReactNode }) => {
   const [borrowValue, setBorrowValue] = useState('');
   const [borrowLimit, setBorrowLimit] = useState('');
   const [walletBalance, setWalletBalance] = useState('');
+  const [liquidity, setLiquidity] = useState('');
 
   const getBorrowValue = useCallback(async () => {
     if (!signer || !account) {
@@ -65,11 +70,21 @@ export const UniContextProvider = ({ children }: { children: ReactNode }) => {
     setWalletBalance(ret);
   }, [account, signer]);
 
-  useEffect(() => {
+  const getLiquidity = useCallback(async () => {
+    const erc20 = Erc20__factory.connect(WETH_ADDRESS, signer);
+    const balance = await erc20.balanceOf(ERC20_RESERVE_ADDRESS);
+    setLiquidity(ethers.utils.formatEther(balance));
+  }, [signer]);
+  const updateData = useCallback(() => {
     getBorrowLimit();
     getBorrowValue();
     getWalletBalance();
-  }, [getBorrowLimit, getBorrowValue, getWalletBalance]);
+    getLiquidity();
+  }, [getBorrowLimit, getBorrowValue, getWalletBalance, getLiquidity]);
+
+  useEffect(() => {
+    updateData();
+  }, [updateData]);
 
   const value = useMemo(() => {
     return {
@@ -79,6 +94,9 @@ export const UniContextProvider = ({ children }: { children: ReactNode }) => {
       getBorrowValue,
       walletBalance,
       getWalletBalance,
+      liquidity,
+      getLiquidity,
+      updateData,
     };
   }, [
     borrowLimit,
@@ -87,6 +105,9 @@ export const UniContextProvider = ({ children }: { children: ReactNode }) => {
     getBorrowValue,
     getWalletBalance,
     walletBalance,
+    getLiquidity,
+    liquidity,
+    updateData,
   ]);
   return <UniContext.Provider value={value}>{children}</UniContext.Provider>;
 };

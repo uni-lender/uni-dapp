@@ -44,7 +44,7 @@ const createData = (
 const rows = [createData('WETH', 1, 159, 6.0, 243, 4.0)];
 
 const ERC20Table = () => {
-  const { walletBalance, getWalletBalance, getBorrowLimit } = useUniContext();
+  const { walletBalance, updateData, liquidity } = useUniContext();
 
   const [borrowOpen, toggleBorrowOpen] = useState(false);
   const [borrowData, setBorrowData] = useState({} as BorrowRow);
@@ -86,7 +86,7 @@ const ERC20Table = () => {
               <TableCell align="right">{row.tvl}</TableCell>
               <TableCell align="right">{row.supplyAPY}</TableCell>
               <TableCell align="right">{row.borrowAPY}</TableCell>
-              <TableCell align="right">{row.liquidity}</TableCell>
+              <TableCell align="right">{liquidity}WETH</TableCell>
               <TableCell align="right">
                 <Button
                   variant="outlined"
@@ -127,8 +127,7 @@ const ERC20Table = () => {
         }}
         successCallback={() =>
           setTimeout(() => {
-            getWalletBalance();
-            getBorrowLimit();
+            updateData();
           }, 300)
         }
       />

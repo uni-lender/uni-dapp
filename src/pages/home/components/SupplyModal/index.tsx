@@ -91,9 +91,7 @@ export const SupplyModal = ({
       const retObj = JSON.parse(
         atob(data.replace(/^data:\w+\/\w+;base64,/, ''))
       );
-      setTimeout(() => {
-        setImgObj(retObj as ImgObj);
-      }, 2000);
+      setImgObj(retObj as ImgObj);
     };
     getData();
     return () => {
@@ -166,7 +164,7 @@ export const SupplyModal = ({
         )}
 
         <StyledDialogContentText>
-          Current Borrow Limit: {borrowLimit}WETH{' '}
+          Borrow Limit: {borrowLimit}WETH{' '}
           <span style={{ color: 'green' }}> +1WETH</span>
         </StyledDialogContentText>
 
